@@ -1,24 +1,39 @@
 package cardchanneler.relics;
 
 import basemod.abstracts.CustomRelic;
+import cardchanneler.orbs.ChanneledCard;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.mod.stslib.relics.ClickableRelic;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.orbs.Lightning;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 
 public class CardChannelerRelic  extends CustomRelic implements ClickableRelic {
-	public static final String ID = "Card Channeler";
+	private static final Logger logger = LogManager.getLogger(CardChannelerRelic.class.getName());
+	public static final String ID = "CardChanneler:CardChanneler";
 	private static final String IMG = "relics/CardChanneler.png";
     
     public CardChannelerRelic() {
         super(ID, new Texture(IMG), RelicTier.SPECIAL, LandingSound.FLAT);
     }
     
+    @Override
     public void onRightClick() {
-        final AbstractOrb orb = new Lightning();
+    	boolean outsideCombat = AbstractDungeon.getCurrRoom().phase != AbstractRoom.RoomPhase.COMBAT;
+    			if (outsideCombat){
+    				logger.info("You cannot use this relic outside combat");
+    			}
+        final AbstractOrb orb = new ChanneledCard();
         AbstractDungeon.actionManager.addToBottom(new ChannelAction(orb));
+    }
+    
+    @Override
+    public String getUpdatedDescription() {
+        return DESCRIPTIONS[0];
     }
 }
