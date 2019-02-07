@@ -1,5 +1,7 @@
 package cardchanneler.orbs;
 
+import java.lang.reflect.Field;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,6 +21,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.OrbStrings;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.vfx.combat.*;
 
@@ -95,39 +98,56 @@ public class ChanneledCard extends AbstractOrb {
 //        return num;
 //    }
     
-    private String getDynamicValue(final char key) {
-        switch (key) {
-            case 'B': {
-                if (!card.isBlockModified) {
-                    return Integer.toString(card.baseBlock);
-                }
-                if (card.block >= card.baseBlock) {
-                    return "[#7fff00]" + Integer.toString(card.block) + "[]";
-                }
-                return "[#ff6563]" + Integer.toString(card.block) + "[]";
-            }
-            case 'D': {
-                if (!card.isDamageModified) {
-                    return Integer.toString(card.baseDamage);
-                }
-                if (card.damage >= card.baseDamage) {
-                    return "[#7fff00]" + Integer.toString(card.damage) + "[]";
-                }
-                return "[#ff6563]" + Integer.toString(card.damage) + "[]";
-            }
-            case 'M': {
-                if (!card.isMagicNumberModified) {
-                    return Integer.toString(card.baseMagicNumber);
-                }
-                if (card.magicNumber >= card.baseMagicNumber) {
-                    return "[#7fff00]" + Integer.toString(card.magicNumber) + "[]";
-                }
-                return "[#ff6563]" + Integer.toString(card.magicNumber) + "[]";
-            }
-            default: {
-                ChanneledCard.logger.info("KEY: " + key);
-                return Integer.toString(-99);
-            }
+    private String getDynamicValue(final String key) {
+    	if (key.length() == 1){
+	        switch (key.charAt(0)) {
+	            case 'B': {
+	                if (!card.isBlockModified) {
+	                    return Integer.toString(card.baseBlock);
+	                }
+	                if (card.block >= card.baseBlock) {
+	                    return "[#7fff00]" + Integer.toString(card.block) + "[]";
+	                }
+	                return "[#ff6563]" + Integer.toString(card.block) + "[]";
+	            }
+	            case 'D': {
+	                if (!card.isDamageModified) {
+	                    return Integer.toString(card.baseDamage);
+	                }
+	                if (card.damage >= card.baseDamage) {
+	                    return "[#7fff00]" + Integer.toString(card.damage) + "[]";
+	                }
+	                return "[#ff6563]" + Integer.toString(card.damage) + "[]";
+	            }
+	            case 'M': {
+	                if (!card.isMagicNumberModified) {
+	                    return Integer.toString(card.baseMagicNumber);
+	                }
+	                if (card.magicNumber >= card.baseMagicNumber) {
+	                    return "[#7fff00]" + Integer.toString(card.magicNumber) + "[]";
+	                }
+	                return "[#ff6563]" + Integer.toString(card.magicNumber) + "[]";
+	            }
+	            default: {
+	                ChanneledCard.logger.info("KEY: " + key);
+	                return Integer.toString(-99);
+	            }
+	        }
+    	}
+	    else {
+			Object value = null;
+			try {
+			Field field = card.getClass().getField("someField");
+
+				value = field.get(card);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			}
+			return (String) value;
         }
     }
 
@@ -152,14 +172,17 @@ public class ChanneledCard extends AbstractOrb {
                     description += punctuation;
                 }
                 else if (tmp.length() > 0 && tmp.charAt(0) == '!') {
-                    if (tmp.length() == 4) {
-                        description += getDynamicValue(tmp.charAt(1));
-                    }
-                    else if (tmp.length() == 5) {
-                        description += getDynamicValue(tmp.charAt(1));
-                        description += tmp.charAt(3);
-                    }
-                    description += ' ';
+                	String key = "";
+                	for (int j=1; j<tmp.length(); j++){
+                		if (tmp.charAt(j) == '!'){
+                			description += getDynamicValue(key);
+                			description += tmp.substring(j+1);
+                			description += ' ';
+                		}
+                		else {
+                		key += tmp.charAt(j);
+                		}
+                	}
                 }
                 else{
                 	description += tmp;
@@ -174,16 +197,15 @@ public class ChanneledCard extends AbstractOrb {
     }
 
     @Override
-    public void onEvoke() { // 1.On Orb Evoke
-
-        AbstractDungeon.actionManager.addToBottom( // 2.Damage all enemies
-                new DamageAllEnemiesAction(AbstractDungeon.player, DamageInfo.createDamageMatrix(this.evokeAmount, true, true), DamageInfo.DamageType.THORNS, AbstractGameAction.AttackEffect.NONE));
-       // The damage matrix is how orb damage all enemies actions have to be assigned. For regular cards that do damage to everyone, check out cleave or whirlwind - they are a bit simpler.
-
-
-        AbstractDungeon.actionManager.addToBottom(new SFXAction("TINGSHA")); // 3.And play a Jingle Sound.
-        // For a list of sound effects you can use, look under com.megacrit.cardcrawl.audio.SoundMaster - you can see the list of keys you can use there. As far as previewing what they sound like, open desktop-1.0.jar with something like 7-Zip and go to audio. Reference the file names provided. (Thanks fiiiiilth)
-
+    public void onEvoke() {
+    	//The dontTriggerOnUseCard is to prevent interactions with
+    	//relics, powers, and cards that happen when you to play a card
+    	AbstractMonster monster = AbstractDungeon.getRandomMonster();
+    	card.calculateCardDamage(monster);
+    	boolean oldDontTriggerValue = card.dontTriggerOnUseCard; 
+    	card.dontTriggerOnUseCard = true;
+        card.use(AbstractDungeon.player, AbstractDungeon.getRandomMonster());
+        card.dontTriggerOnUseCard = oldDontTriggerValue;
     }
 
     @Override
