@@ -13,6 +13,8 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
+import com.megacrit.cardcrawl.localization.UIStrings;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +33,8 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         BaseMod.loadCustomStrings(RelicStrings.class, relicStrings);
         final String orbStrings = Gdx.files.internal("localization/OrbStrings.json").readString("UTF-8");
         BaseMod.loadCustomStrings(OrbStrings.class, orbStrings);
+        final String uiStrings = Gdx.files.internal("localization/ActionStrings.json").readString("UTF-8");
+        BaseMod.loadCustomStrings(UIStrings.class, uiStrings);
         logger.info("Done editing strings");
     }
 
