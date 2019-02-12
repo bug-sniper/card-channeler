@@ -33,7 +33,7 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         BaseMod.loadCustomStrings(RelicStrings.class, relicStrings);
         final String orbStrings = Gdx.files.internal("localization/OrbStrings.json").readString("UTF-8");
         BaseMod.loadCustomStrings(OrbStrings.class, orbStrings);
-        final String uiStrings = Gdx.files.internal("localization/ActionStrings.json").readString("UTF-8");
+        final String uiStrings = Gdx.files.internal("localization/UIStrings.json").readString("UTF-8");
         BaseMod.loadCustomStrings(UIStrings.class, uiStrings);
         logger.info("Done editing strings");
     }

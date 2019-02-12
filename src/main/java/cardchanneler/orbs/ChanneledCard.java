@@ -61,43 +61,6 @@ public class ChanneledCard extends AbstractOrb {
         channelAnimTimer = 0.5f;
     }
     
-//    /**
-//     * 
-//     * @param key The string between !s that is used to refer to a variable
-//     * @return The number that the key represents in a card 
-//     */
-//    private int readDynamicVariable(final char key){
-//        final StringBuilder stringBuilder = new StringBuilder();
-//        int num = 0;
-//        switch (key) {
-//            case 'D': {
-//                if (!card.isDamageModified) {
-//                    num = card.baseDamage;
-//                    break;
-//                }
-//                num = card.damage;
-//                break;
-//            }
-//            case 'B': {
-//                if (!card.isBlockModified) {
-//                    num = card.baseBlock;
-//                    break;
-//                }
-//                num = card.block;
-//                break;
-//            }
-//            case 'M': {
-//                if (!card.isMagicNumberModified) {
-//                    num = card.baseMagicNumber;
-//                    break;
-//                }
-//                num = card.magicNumber;
-//                break;
-//            }
-//        }
-//        return num;
-//    }
-    
     private String getDynamicValue(final String key) {
     	if (key.length() == 1){
 	        switch (key.charAt(0)) {
@@ -237,7 +200,6 @@ public class ChanneledCard extends AbstractOrb {
         renderText(sb);
         hb.render(sb);
     }
-
 
     @Override
     public void triggerEvokeAnimation() { // The evoke animation of this orb is the dark-orb activation effect.

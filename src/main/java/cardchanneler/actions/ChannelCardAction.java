@@ -30,7 +30,7 @@ public class ChannelCardAction extends AbstractGameAction{
 	        }
 	        if (!AbstractDungeon.handCardSelectScreen.wereCardsRetrieved) {
 	            for (final AbstractCard c : AbstractDungeon.handCardSelectScreen.selectedCards.group) {
-	                final AbstractOrb orb = new ChanneledCard(c);
+	                final AbstractOrb orb = new ChanneledCard(c.makeStatEquivalentCopy());
 	                AbstractDungeon.actionManager.addToBottom(new ChannelAction(orb));
 	            }
 	            AbstractDungeon.handCardSelectScreen.wereCardsRetrieved = true;
