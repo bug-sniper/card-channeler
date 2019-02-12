@@ -21,6 +21,7 @@ public class CardChannelerRelic  extends CustomRelic implements ClickableRelic {
     
     @Override
     public void onRightClick() {
+    	//TODO: Make activation more convenient if people are expected to use this a lot
     	boolean outsideCombat = AbstractDungeon.getCurrRoom().phase != AbstractRoom.RoomPhase.COMBAT;
     			if (outsideCombat){
     				logger.info("You cannot use this relic outside combat");

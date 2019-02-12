@@ -30,6 +30,7 @@ public class ChannelCardAction extends AbstractGameAction{
 	        }
 	        if (!AbstractDungeon.handCardSelectScreen.wereCardsRetrieved) {
 	            for (final AbstractCard c : AbstractDungeon.handCardSelectScreen.selectedCards.group) {
+	            	//TODO: Copy stats defined by mods too
 	                final AbstractOrb orb = new ChanneledCard(c.makeStatEquivalentCopy());
 	                AbstractDungeon.actionManager.addToBottom(new ChannelAction(orb));
 	            }

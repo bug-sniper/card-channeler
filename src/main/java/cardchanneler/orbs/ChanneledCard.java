@@ -26,6 +26,7 @@ import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.vfx.combat.*;
 
 import cardchanneler.CardChannelerMod;
+import cardchanneler.actions.ChannelCardAction;
 
 public class ChanneledCard extends AbstractOrb {
 	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
@@ -140,7 +141,6 @@ public class ChanneledCard extends AbstractOrb {
                 		if (tmp.charAt(j) == '!'){
                 			description += getDynamicValue(key);
                 			description += tmp.substring(j+1);
-                			description += ' ';
                 		}
                 		else {
                 		key += tmp.charAt(j);
@@ -165,10 +165,10 @@ public class ChanneledCard extends AbstractOrb {
     	//relics, powers, and cards that happen when you to play a card
     	AbstractMonster monster = AbstractDungeon.getRandomMonster();
     	card.calculateCardDamage(monster);
-    	boolean oldDontTriggerValue = card.dontTriggerOnUseCard; 
-    	card.dontTriggerOnUseCard = true;
         card.use(AbstractDungeon.player, AbstractDungeon.getRandomMonster());
-        card.dontTriggerOnUseCard = oldDontTriggerValue;
+        
+        //TODO: Make multi-casting not duplicate card
+        AbstractDungeon.player.discardPile.addToBottom(card);
     }
 
     @Override
@@ -177,13 +177,12 @@ public class ChanneledCard extends AbstractOrb {
     }
 
     @Override
-    public void updateAnimation() {// You can totally leave this as is.
-        // If you want to create a whole new orb effect - take a look at conspire's Water Orb. It includes a custom sound, too!
+    public void updateAnimation() {
         super.updateAnimation();
         angle += Gdx.graphics.getDeltaTime() * 45.0f;
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (this.vfxTimer < 0.0f) {
-            AbstractDungeon.effectList.add(new DarkOrbPassiveEffect(this.cX, this.cY)); // This is the purple-sparkles in the orb. You can change this to whatever fits your orb.
+            AbstractDungeon.effectList.add(new FrostOrbPassiveEffect(this.cX, this.cY));
             this.vfxTimer = MathUtils.random(this.vfxIntervalMin, this.vfxIntervalMax);
         }
     }
@@ -191,12 +190,11 @@ public class ChanneledCard extends AbstractOrb {
     // Render the orb.
     @Override
     public void render(SpriteBatch sb) {
-        sb.setColor(new Color(1.0f, 1.0f, 1.0f, this.c.a / 2.0f));
-        sb.draw(this.img, this.cX - 48.0f, this.cY - 48.0f + this.bobEffect.y, 48.0f, 48.0f, 96.0f, 96.0f, this.scale + MathUtils.sin(this.angle / PI_4) * ORB_WAVY_DIST * Settings.scale, this.scale, this.angle, 0, 0, 96, 96, false, false);
-        sb.setColor(new Color(1.0f, 1.0f, 1.0f, this.c.a / 2.0f));
-        sb.setBlendFunction(770, 1);
-        sb.draw(this.img, this.cX - 48.0f, this.cY - 48.0f + this.bobEffect.y, 48.0f, 48.0f, 96.0f, 96.0f, this.scale, this.scale + MathUtils.sin(this.angle / PI_4) * ORB_WAVY_DIST * Settings.scale, -this.angle, 0, 0, 96, 96, false, false);
-        sb.setBlendFunction(770, 771);
+    	AbstractCard displayCopy = card.makeStatEquivalentCopy();
+    	displayCopy.current_x = cX;
+    	displayCopy.current_y = cY;
+    	displayCopy.drawScale /= 5F;
+    	displayCopy.render(sb);
         renderText(sb);
         hb.render(sb);
     }
