@@ -6,10 +6,13 @@ import basemod.helpers.RelicType;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
+import basemod.interfaces.PostUpdateSubscriber;
 import cardchanneler.relics.CardChannelerRelic;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
@@ -19,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @SpireInitializer
-public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRelicsSubscriber, EditStringsSubscriber {
+public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRelicsSubscriber, EditStringsSubscriber, PostUpdateSubscriber {
     private static final Logger logger = LogManager.getLogger(CardChannelerMod.class.getName());
 
     public static void initialize() {
@@ -49,4 +52,13 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
     public void receivePostDungeonInitialize() {
         RelicLibrary.getRelic(CardChannelerRelic.ID).makeCopy().instantObtain();
     }
+
+	@Override
+	public void receivePostUpdate() {
+		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
+			if (Gdx.input.isKeyJustPressed(Keys.C)) {
+				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
+			}
+		}
+	}
 }

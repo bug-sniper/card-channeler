@@ -19,14 +19,18 @@ public class CardChannelerRelic  extends CustomRelic implements ClickableRelic {
         super(ID, new Texture(IMG), RelicTier.SPECIAL, LandingSound.FLAT);
     }
     
+    public void invoke(){
+    	boolean outsideCombat = AbstractDungeon.getCurrRoom().phase != AbstractRoom.RoomPhase.COMBAT;
+		if (outsideCombat){
+			logger.info("You cannot use this relic outside combat");
+			return;
+		}
+		AbstractDungeon.actionManager.addToBottom(new ChannelCardAction());
+    }
+    
     @Override
     public void onRightClick() {
-    	//TODO: Make activation more convenient if people are expected to use this a lot
-    	boolean outsideCombat = AbstractDungeon.getCurrRoom().phase != AbstractRoom.RoomPhase.COMBAT;
-    			if (outsideCombat){
-    				logger.info("You cannot use this relic outside combat");
-    			}
-        AbstractDungeon.actionManager.addToBottom(new ChannelCardAction());
+    	invoke();
     }
     
     @Override
