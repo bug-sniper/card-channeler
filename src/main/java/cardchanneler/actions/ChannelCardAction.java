@@ -43,5 +43,4 @@ public class ChannelCardAction extends AbstractGameAction{
 	        uiStrings = CardCrawlGame.languagePack.getUIString("CardChanneler:ChannelCardAction");
 	        TEXT = ChannelCardAction.uiStrings.TEXT;
 	    }
-
 }

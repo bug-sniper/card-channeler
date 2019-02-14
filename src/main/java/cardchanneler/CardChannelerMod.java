@@ -2,6 +2,7 @@
 package cardchanneler;
 
 import basemod.BaseMod;
+import basemod.DevConsole;
 import basemod.helpers.RelicType;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
@@ -56,7 +57,7 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 	@Override
 	public void receivePostUpdate() {
 		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
-			if (Gdx.input.isKeyJustPressed(Keys.C)) {
+			if (Gdx.input.isKeyJustPressed(Keys.C) && !DevConsole.visible) {
 				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
 			}
 		}

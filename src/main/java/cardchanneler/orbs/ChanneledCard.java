@@ -6,18 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.actions.AbstractGameAction;
-import com.megacrit.cardcrawl.actions.animations.VFXAction;
-import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
-import com.megacrit.cardcrawl.actions.common.DrawCardAction;
-import com.megacrit.cardcrawl.actions.utility.SFXAction;
+import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.OrbStrings;
@@ -25,8 +18,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.vfx.combat.*;
 
-import cardchanneler.CardChannelerMod;
-import cardchanneler.actions.ChannelCardAction;
+import cardchanneler.actions.ResetChaneledCardBeingLostAction;
+import cardchanneler.actions.ToggleChanneledCardBeingEvokedAction;
 
 public class ChanneledCard extends AbstractOrb {
 	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
@@ -40,10 +33,10 @@ public class ChanneledCard extends AbstractOrb {
     private float vfxTimer = 1.0f;
     private float vfxIntervalMin = 0.1f;
     private float vfxIntervalMax = 0.4f;
-    private static final float ORB_WAVY_DIST = 0.04f;
-    private static final float PI_4 = 12.566371f;
     
-    private AbstractCard card = null;
+    public AbstractCard card = null;
+    public static boolean beingEvoked = false;
+    public static boolean orbBeingLost = false;
     
     public ChanneledCard(AbstractCard card) {
 
@@ -53,6 +46,7 @@ public class ChanneledCard extends AbstractOrb {
         
         this.card = card;
 
+        //leaving the amounts here just in case other code needs them
         evokeAmount = this.baseEvokeAmount = 1;
         passiveAmount = this.basePassiveAmount = 3;
 
@@ -161,14 +155,13 @@ public class ChanneledCard extends AbstractOrb {
 
     @Override
     public void onEvoke() {
-    	//The dontTriggerOnUseCard is to prevent interactions with
-    	//relics, powers, and cards that happen when you to play a card
+    	AbstractDungeon.actionManager.addToBottom(new ToggleChanneledCardBeingEvokedAction());
     	AbstractMonster monster = AbstractDungeon.getRandomMonster();
     	card.calculateCardDamage(monster);
-        card.use(AbstractDungeon.player, AbstractDungeon.getRandomMonster());
-        
-        //TODO: Make multi-casting not duplicate card
-        AbstractDungeon.player.discardPile.addToBottom(card);
+    	card.use(AbstractDungeon.player, monster);
+    	AbstractDungeon.actionManager.addToBottom(new UseCardAction(card, monster));
+    	AbstractDungeon.actionManager.addToBottom(new ToggleChanneledCardBeingEvokedAction());
+    	AbstractDungeon.actionManager.addToBottom(new ResetChaneledCardBeingLostAction());
     }
 
     @Override
@@ -182,6 +175,7 @@ public class ChanneledCard extends AbstractOrb {
         angle += Gdx.graphics.getDeltaTime() * 45.0f;
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (this.vfxTimer < 0.0f) {
+        	//TODO: Make passive effect only cover where the card actually is
             AbstractDungeon.effectList.add(new FrostOrbPassiveEffect(this.cX, this.cY));
             this.vfxTimer = MathUtils.random(this.vfxIntervalMin, this.vfxIntervalMax);
         }
@@ -200,13 +194,13 @@ public class ChanneledCard extends AbstractOrb {
     }
 
     @Override
-    public void triggerEvokeAnimation() { // The evoke animation of this orb is the dark-orb activation effect.
+    public void triggerEvokeAnimation() {
     	AbstractDungeon.effectsQueue.add(new DarkOrbActivateEffect(this.cX, this.cY));
     }
 
     @Override
     public void playChannelSFX() { // When you channel this orb, the ATTACK_FIRE effect plays ("Fwoom").
-        CardCrawlGame.sound.play("ATTACK_FIRE", 0.1f);
+        //CardCrawlGame.sound.play("ATTACK_FIRE", 0.1f);
     }
 
     @Override
