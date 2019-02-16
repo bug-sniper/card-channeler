@@ -20,16 +20,17 @@ import com.megacrit.cardcrawl.vfx.combat.*;
 
 import cardchanneler.actions.ResetChaneledCardBeingLostAction;
 import cardchanneler.actions.ToggleChanneledCardBeingEvokedAction;
+import cardchanneler.vfx.ChanneledCardPassiveEffect;
 
 public class ChanneledCard extends AbstractOrb {
 	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
-
+	
     // Standard ID/Description
     public static final String ORB_ID = "CardChanneler:ChanneledCard";
     private static final OrbStrings orbString = CardCrawlGame.languagePack.getOrbString(ORB_ID);
-    public static final String[] DESC = orbString.DESCRIPTION;
 
     // Animation Rendering Numbers - You can leave these at default, or play around with them and see what they change.
+	public static final float scale = 0.2f;
     private float vfxTimer = 1.0f;
     private float vfxIntervalMin = 0.1f;
     private float vfxIntervalMax = 0.4f;
@@ -52,7 +53,8 @@ public class ChanneledCard extends AbstractOrb {
 
         this.updateDescription();
 
-        angle = MathUtils.random(360.0f); // More Animation-related Numbers
+        // More Animation-related Numbers
+        angle = MathUtils.random(360.0f);
         channelAnimTimer = 0.5f;
     }
     
@@ -109,14 +111,15 @@ public class ChanneledCard extends AbstractOrb {
         }
     }
 
+    // Set the on-hover description of the orb
     @Override
-    public void updateDescription() { // Set the on-hover description of the orb
+    public void updateDescription() { 
+    	description = orbString.DESCRIPTION[0];
     	card.initializeDescription();
-        String rawDescription = "";
+        String descriptionFragment = "";
         for (int i=0; i<card.description.size(); i++){
-        	rawDescription += card.description.get(i).text;
-        	description = "";
-            for (String tmp : rawDescription.split(" ")) {
+        	descriptionFragment += card.description.get(i).text;
+            for (String tmp : descriptionFragment.split(" ")) {
                 tmp += ' ';
                 if (tmp.length() > 0 && tmp.charAt(0) == '*') {
                     tmp = tmp.substring(1);
@@ -176,21 +179,22 @@ public class ChanneledCard extends AbstractOrb {
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (this.vfxTimer < 0.0f) {
         	//TODO: Make passive effect only cover where the card actually is
-            AbstractDungeon.effectList.add(new FrostOrbPassiveEffect(this.cX, this.cY));
+            AbstractDungeon.effectList.add(new ChanneledCardPassiveEffect(this.cX, this.cY));
             this.vfxTimer = MathUtils.random(this.vfxIntervalMin, this.vfxIntervalMax);
         }
     }
 
-    // Render the orb.
+    //Related to the Disciple mod's switch card tip rendering:
+    //https://github.com/Tempus/The-Disciple/blob/master/src/main/java/cards/switchCards/AbstractSelfSwitchCard.java
     @Override
     public void render(SpriteBatch sb) {
     	AbstractCard displayCopy = card.makeStatEquivalentCopy();
     	displayCopy.current_x = cX;
     	displayCopy.current_y = cY;
-    	displayCopy.drawScale /= 5F;
+    	displayCopy.drawScale *= ChanneledCard.scale;
     	displayCopy.render(sb);
-        renderText(sb);
         hb.render(sb);
+        //InputHelper.getCardSelectedByHotkey();
     }
 
     @Override
@@ -199,8 +203,8 @@ public class ChanneledCard extends AbstractOrb {
     }
 
     @Override
-    public void playChannelSFX() { // When you channel this orb, the ATTACK_FIRE effect plays ("Fwoom").
-        //CardCrawlGame.sound.play("ATTACK_FIRE", 0.1f);
+    public void playChannelSFX() {
+    	//Just use the card's SFX
     }
 
     @Override
