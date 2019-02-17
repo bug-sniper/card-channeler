@@ -75,7 +75,6 @@ public class ChanneledCardDiscardPatch {
 			        	AbstractGameAction action = AbstractDungeon.actionManager.actions.get(i);
 			        	if (action.getClass().getName() == DamageAction.class.getName()){
 			        		if (action.target == AbstractDungeon.player){
-			        			System.out.println("Skipping damage targetting player");
 			        			//We aren't doing anything with the final boss's powers
 			        			continue;
 			        		}
@@ -86,11 +85,6 @@ public class ChanneledCardDiscardPatch {
 			    	        	System.out.println("Changing damage time to thorns");
 			    	        	info.type = DamageType.THORNS;
 			    	        }
-			    	        else{
-			    	        	System.out.println("Not changing damage time to thorns");
-			    	        }
-			        	}else{
-			        		System.out.println("Skipping non-damage action");
 			        	}
 			        }
 			        ChanneledCard.beingEvoked = false;
