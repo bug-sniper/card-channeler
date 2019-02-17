@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
 import com.megacrit.cardcrawl.actions.common.DamageRandomEnemyAction;
+import com.megacrit.cardcrawl.actions.defect.RedoAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -48,6 +49,22 @@ public class ChanneledCardDiscardPatch {
 	    public static void Prefix(AbstractPlayer __instance)
 	    {
 	        AbstractOrb orb = (AbstractOrb)__instance.orbs.get(0);
+	        if (orb.ID == ChanneledCard.ORB_ID){
+	        	AbstractCard card = ((ChanneledCard)orb).card;
+	        	BeingRetainedAsOrbField.beingRetainedAsOrb.set(card, true);
+	        }
+	    }
+	}
+	
+	@SpirePatch(
+	        clz=RedoAction.class,
+	        method="update"
+	)
+	public static class RecursionPreservesOrb {
+		
+	    public static void Prefix(RedoAction __instance)
+	    {
+	        AbstractOrb orb = AbstractDungeon.player.orbs.get(0);
 	        if (orb.ID == ChanneledCard.ORB_ID){
 	        	AbstractCard card = ((ChanneledCard)orb).card;
 	        	BeingRetainedAsOrbField.beingRetainedAsOrb.set(card, true);
@@ -92,6 +109,7 @@ public class ChanneledCardDiscardPatch {
 			    	        }
 			        	}else if (action.getClass().getName() == DamageAllEnemiesAction.class.getName()){
 			        		if (action.damageType == DamageType.NORMAL){
+			        			//change the damage type to thorns
 			        			action.damageType = DamageType.THORNS;
 			        		}
 			        	}
