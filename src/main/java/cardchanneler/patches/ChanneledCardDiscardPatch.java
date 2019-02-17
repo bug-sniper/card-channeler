@@ -10,6 +10,8 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
+import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
+import com.megacrit.cardcrawl.actions.common.DamageRandomEnemyAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -73,11 +75,12 @@ public class ChanneledCardDiscardPatch {
 		        if (ChanneledCard.beingEvoked){
 			        for(int i=0; i<AbstractDungeon.actionManager.actions.size(); i++){
 			        	AbstractGameAction action = AbstractDungeon.actionManager.actions.get(i);
-			        	if (action.getClass().getName() == DamageAction.class.getName()){
-			        		if (action.target == AbstractDungeon.player){
-			        			//We aren't doing anything with the final boss's powers
-			        			continue;
-			        		}
+		        		if (action.target == AbstractDungeon.player){
+		        			//We aren't doing anything with the final boss's powers
+		        			continue;
+		        		}
+			        	if (action.getClass().getName() == DamageAction.class.getName()||
+			        			action.getClass().getName() == DamageRandomEnemyAction.class.getName()){
 			    	        f = action.getClass().getDeclaredField("info");
 			    	        f.setAccessible(true);
 			    	        DamageInfo info = (DamageInfo) f.get(action);
@@ -85,6 +88,10 @@ public class ChanneledCardDiscardPatch {
 			    	        	System.out.println("Changing damage time to thorns");
 			    	        	info.type = DamageType.THORNS;
 			    	        }
+			        	}else if (action.getClass().getName() == DamageAllEnemiesAction.class.getName()){
+			        		if (action.damageType == DamageType.NORMAL){
+			        			action.damageType = DamageType.THORNS;
+			        		}
 			        	}
 			        }
 			        ChanneledCard.beingEvoked = false;
