@@ -24,7 +24,8 @@ import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 
-//This patch makes channeled cards go to your discard pile if they are removed or evoked
+//This patch makes channeled cards go to your discard pile if they are removed or evoked.
+//We also reset some variables when we're done evoking cards.
 
 public class ChanneledCardDiscardPatch {
 	public static final Logger logger = LogManager.getLogger(ChanneledCardDiscardPatch.class.getName());
@@ -63,8 +64,8 @@ public class ChanneledCardDiscardPatch {
 	    public static void Postfix(UseCardAction __instance)
 	    {   
 	    	try{
-		        Field f = null;
-		        f = __instance.getClass().getDeclaredField("targetCard");
+	    		//targetCard is private but needs to be accessed
+		        Field f = __instance.getClass().getDeclaredField("targetCard");
 		        f.setAccessible(true);
 		        AbstractCard card = null;
 		        card = (AbstractCard) f.get(__instance);
@@ -81,11 +82,12 @@ public class ChanneledCardDiscardPatch {
 		        		}
 			        	if (action.getClass().getName() == DamageAction.class.getName()||
 			        			action.getClass().getName() == DamageRandomEnemyAction.class.getName()){
+			        		//info is private but needs to be accessed
 			    	        f = action.getClass().getDeclaredField("info");
 			    	        f.setAccessible(true);
 			    	        DamageInfo info = (DamageInfo) f.get(action);
 			    	        if (info.type == DamageType.NORMAL){
-			    	        	System.out.println("Changing damage time to thorns");
+			    	        	//change the damage type to thorns
 			    	        	info.type = DamageType.THORNS;
 			    	        }
 			        	}else if (action.getClass().getName() == DamageAllEnemiesAction.class.getName()){

@@ -12,7 +12,6 @@ import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
@@ -41,11 +40,6 @@ public class ChanneledCard extends AbstractOrb {
     	super();
         ID = ORB_ID;
         name = orbString.NAME;
-        img = ImageMaster.loadImage("orbs/default_orb.png");
-
-        // More Animation-related Numbers
-        angle = MathUtils.random(360.0f);
-        channelAnimTimer = 0.5f;
         
         this.card = card;
         updateDescription();
