@@ -44,8 +44,7 @@ public class ChannelCardAction
         if (!AbstractDungeon.handCardSelectScreen.wereCardsRetrieved)
         {
             for (final AbstractCard c : AbstractDungeon.handCardSelectScreen.selectedCards.group) {
-            	//TODO: Copy stats defined by mods too
-                final AbstractOrb orb = new ChanneledCard(c.makeStatEquivalentCopy());
+                final AbstractOrb orb = new ChanneledCard(c);
                 AbstractDungeon.actionManager.addToTop(new ChannelAction(orb));
             }
 

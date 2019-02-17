@@ -18,8 +18,6 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.vfx.combat.*;
 
-import cardchanneler.actions.ResetChaneledCardBeingLostAction;
-import cardchanneler.actions.ToggleChanneledCardBeingEvokedAction;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
 
 public class ChanneledCard extends AbstractOrb {
@@ -40,22 +38,17 @@ public class ChanneledCard extends AbstractOrb {
     public static boolean orbBeingLost = false;
     
     public ChanneledCard(AbstractCard card) {
-
+    	super();
         ID = ORB_ID;
         name = orbString.NAME;
         img = ImageMaster.loadImage("orbs/default_orb.png");
-        
-        this.card = card;
-
-        //leaving the amounts here just in case other code needs them
-        evokeAmount = this.baseEvokeAmount = 1;
-        passiveAmount = this.basePassiveAmount = 3;
-
-        this.updateDescription();
 
         // More Animation-related Numbers
         angle = MathUtils.random(360.0f);
         channelAnimTimer = 0.5f;
+        
+        this.card = card;
+        updateDescription();
     }
     
     private String getDynamicValue(final String key) {
@@ -158,13 +151,11 @@ public class ChanneledCard extends AbstractOrb {
 
     @Override
     public void onEvoke() {
-    	AbstractDungeon.actionManager.addToBottom(new ToggleChanneledCardBeingEvokedAction());
+    	beingEvoked = true;
     	AbstractMonster monster = AbstractDungeon.getRandomMonster();
     	card.calculateCardDamage(monster);
     	card.use(AbstractDungeon.player, monster);
-    	AbstractDungeon.actionManager.addToBottom(new UseCardAction(card, monster));
-    	AbstractDungeon.actionManager.addToBottom(new ToggleChanneledCardBeingEvokedAction());
-    	AbstractDungeon.actionManager.addToBottom(new ResetChaneledCardBeingLostAction());
+    	AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monster));
     }
 
     @Override
@@ -178,7 +169,6 @@ public class ChanneledCard extends AbstractOrb {
         angle += Gdx.graphics.getDeltaTime() * 45.0f;
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (this.vfxTimer < 0.0f) {
-        	//TODO: Make passive effect only cover where the card actually is
             AbstractDungeon.effectList.add(new ChanneledCardPassiveEffect(this.cX, this.cY));
             this.vfxTimer = MathUtils.random(this.vfxIntervalMin, this.vfxIntervalMax);
         }
@@ -188,11 +178,10 @@ public class ChanneledCard extends AbstractOrb {
     //https://github.com/Tempus/The-Disciple/blob/master/src/main/java/cards/switchCards/AbstractSelfSwitchCard.java
     @Override
     public void render(SpriteBatch sb) {
-    	AbstractCard displayCopy = card.makeStatEquivalentCopy();
-    	displayCopy.current_x = cX;
-    	displayCopy.current_y = cY;
-    	displayCopy.drawScale *= ChanneledCard.scale;
-    	displayCopy.render(sb);
+	    card.current_x = cX;
+	    card.current_y = cY;
+	    card.drawScale = scale;
+    	card.render(sb);
         hb.render(sb);
         //InputHelper.getCardSelectedByHotkey();
     }

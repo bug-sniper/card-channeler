@@ -29,7 +29,7 @@ public class ChanneledCardPassiveEffect extends AbstractGameEffect
         effectDuration = MathUtils.random(0.4f, 0.8f);
         duration = effectDuration;
         startingDuration = effectDuration;
-        orbWidth = ChanneledCard.scale*AbstractCard.IMG_WIDTH * 0.7f;
+        orbWidth = ChanneledCard.scale*AbstractCard.IMG_WIDTH * 0.8f;
         float offsetX = MathUtils.random(-orbWidth/2, orbWidth/2);
         offsetX -= img.packedWidth / 2;
         this.x = x + offsetX;
