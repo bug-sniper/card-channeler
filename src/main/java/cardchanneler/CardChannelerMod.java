@@ -7,23 +7,27 @@ import basemod.helpers.RelicType;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
+import basemod.interfaces.PostDungeonUpdateSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
+import cardchanneler.orbs.ChanneledCard;
 import cardchanneler.relics.CardChannelerRelic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.actions.GameActionManager.Phase;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.orbs.AbstractOrb;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @SpireInitializer
-public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRelicsSubscriber, EditStringsSubscriber, PostUpdateSubscriber {
+public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRelicsSubscriber, EditStringsSubscriber, PostUpdateSubscriber, PostDungeonUpdateSubscriber {
     private static final Logger logger = LogManager.getLogger(CardChannelerMod.class.getName());
 
     public static void initialize() {
@@ -61,5 +65,19 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
 			}
 		}
+	}
+
+	@Override
+	public void receivePostDungeonUpdate() {
+        for (int i = 0; i < AbstractDungeon.player.orbs.size(); ++i) {
+            if (((AbstractOrb)AbstractDungeon.player.orbs.get(i)).ID == ChanneledCard.ORB_ID){
+            	ChanneledCard orb = (ChanneledCard) AbstractDungeon.player.orbs.get(i);
+            	orb.card.applyPowers();
+            	orb.updateDescription();
+            }
+        }
+        if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
+        	ChanneledCard.beingEvoked = false;
+        }
 	}
 }

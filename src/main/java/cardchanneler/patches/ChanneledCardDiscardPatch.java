@@ -8,15 +8,9 @@ import org.apache.logging.log4j.Logger;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.actions.AbstractGameAction;
-import com.megacrit.cardcrawl.actions.common.DamageAction;
-import com.megacrit.cardcrawl.actions.common.DamageAllEnemiesAction;
-import com.megacrit.cardcrawl.actions.common.DamageRandomEnemyAction;
 import com.megacrit.cardcrawl.actions.defect.RedoAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.cards.DamageInfo.DamageType;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
@@ -90,32 +84,6 @@ public class ChanneledCardDiscardPatch {
 		        BeingRetainedAsOrbField.beingRetainedAsOrb.set(
 		        		card, false);
 		        
-		        if (ChanneledCard.beingEvoked){
-			        for(int i=0; i<AbstractDungeon.actionManager.actions.size(); i++){
-			        	AbstractGameAction action = AbstractDungeon.actionManager.actions.get(i);
-		        		if (action.target == AbstractDungeon.player){
-		        			//We aren't doing anything with the final boss's powers
-		        			continue;
-		        		}
-			        	if (action.getClass().getName() == DamageAction.class.getName()||
-			        			action.getClass().getName() == DamageRandomEnemyAction.class.getName()){
-			        		//info is private but needs to be accessed
-			    	        f = action.getClass().getDeclaredField("info");
-			    	        f.setAccessible(true);
-			    	        DamageInfo info = (DamageInfo) f.get(action);
-			    	        if (info.type == DamageType.NORMAL){
-			    	        	//change the damage type to thorns
-			    	        	info.type = DamageType.THORNS;
-			    	        }
-			        	}else if (action.getClass().getName() == DamageAllEnemiesAction.class.getName()){
-			        		if (action.damageType == DamageType.NORMAL){
-			        			//change the damage type to thorns
-			        			action.damageType = DamageType.THORNS;
-			        		}
-			        	}
-			        }
-			        ChanneledCard.beingEvoked = false;
-		        }
 	    	} catch (IllegalAccessException e){
 	    		e.printStackTrace();
 	    	} catch (NoSuchFieldException e) {
