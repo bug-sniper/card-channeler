@@ -1,8 +1,8 @@
 {
   "modid": "card-channeler",
   "name": "Card Channeler",
-  "author_list": [ "eternal0" ],
-  "description": "Allows you to channel cards as orbs",
+  "author_list": [ "bug_sniper" ],
+  "description": "Allows you to channel cards as orbs.",
   "version": "0.0.1",
   "sts_version": "01-03-2019",
   "mts_version": "3.0.0",
