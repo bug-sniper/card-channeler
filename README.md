@@ -4,7 +4,7 @@ A Slay the Spire mod that allows you to channel cards into your orb slots. Chann
 Special thanks to:
 
 * eternal0 and Gremious for the starting points
-* Bug Kiooeht and the other basemod developers for all the patch ideas
+* Bug Kiooeht and the other basemod developers for all the patch apis
 * Chronomancer for the small card rendering code
 * All the people in the Slay The Spire modding discord for answering my questions
 
