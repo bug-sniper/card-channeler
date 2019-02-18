@@ -39,9 +39,8 @@ public class ChanneledCard extends AbstractOrb {
     public ChanneledCard(AbstractCard card) {
     	super();
         ID = ORB_ID;
-        name = orbString.NAME;
-        
         this.card = card;
+        name = orbString.NAME + " " + card.name;
         updateDescription();
     }
     
