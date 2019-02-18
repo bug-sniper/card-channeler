@@ -84,7 +84,7 @@ public class ChanneledCard extends AbstractOrb {
 	    else {
 			Object value = null;
 			try {
-			Field field = card.getClass().getField("someField");
+			Field field = card.getClass().getField(key);
 
 				value = field.get(card);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
