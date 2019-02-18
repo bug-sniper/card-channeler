@@ -1,7 +1,5 @@
 package cardchanneler.orbs;
 
-import java.lang.reflect.Field;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,7 +45,6 @@ public class ChanneledCard extends AbstractOrb {
         updateDescription();
     }
     
-    @SuppressWarnings("unchecked")
 	private String getDynamicValue(final String key) {
 		String value = null;
 		if (key.length() == 1){
@@ -98,6 +95,7 @@ public class ChanneledCard extends AbstractOrb {
 					value = Integer.toString(dv.baseValue(card));
 				}
 			}
+			logger.info(key + " is " + value);
 			return (String) value;
         }
     }
@@ -106,37 +104,42 @@ public class ChanneledCard extends AbstractOrb {
     @Override
     public void updateDescription() { 
     	description = orbString.DESCRIPTION[0];
+    	boolean firstWord = false;
     	card.initializeDescription();
         String descriptionFragment = "";
         for (int i=0; i<card.description.size(); i++){
-        	descriptionFragment += card.description.get(i).text;
-            for (String tmp : descriptionFragment.split(" ")) {
-                tmp += ' ';
-                if (tmp.length() > 0 && tmp.charAt(0) == '*') {
-                    tmp = tmp.substring(1);
+        	descriptionFragment = card.description.get(i).text;
+            for (String word : descriptionFragment.split(" ")) {
+            	if (firstWord){
+            		firstWord = false;
+            	}else{
+            		description += " ";
+            	}
+                if (word.length() > 0 && word.charAt(0) == '*') {
+                    word = word.substring(1);
                     String punctuation = "";
-                    if (tmp.length() > 1 && !Character.isLetter(tmp.charAt(tmp.length() - 2))) {
-                        punctuation += tmp.charAt(tmp.length() - 2);
-                        tmp = tmp.substring(0, tmp.length() - 2);
+                    if (word.length() > 1 && !Character.isLetter(word.charAt(word.length() - 2))) {
+                        punctuation += word.charAt(word.length() - 2);
+                        word = word.substring(0, word.length() - 2);
                         punctuation += ' ';
                     }
-                    description += tmp;
+                    description += word;
                     description += punctuation;
                 }
-                else if (tmp.length() > 0 && tmp.charAt(0) == '!') {
+                else if (word.length() > 0 && word.charAt(0) == '!') {
                 	String key = "";
-                	for (int j=1; j<tmp.length(); j++){
-                		if (tmp.charAt(j) == '!'){
+                	for (int j=1; j<word.length(); j++){
+                		if (word.charAt(j) == '!'){
                 			description += getDynamicValue(key);
-                			description += tmp.substring(j+1);
+                			description += word.substring(j+1);
                 		}
                 		else {
-                		key += tmp.charAt(j);
+                		key += word.charAt(j);
                 		}
                 	}
                 }
                 else{
-                	description += tmp;
+                	description += word;
                 }
             }
         }
