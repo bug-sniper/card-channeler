@@ -17,6 +17,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.vfx.combat.*;
 
+import basemod.BaseMod;
+import basemod.abstracts.DynamicVariable;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
 
 public class ChanneledCard extends AbstractOrb {
@@ -45,8 +47,10 @@ public class ChanneledCard extends AbstractOrb {
         updateDescription();
     }
     
-    private String getDynamicValue(final String key) {
-    	if (key.length() == 1){
+    @SuppressWarnings("unchecked")
+	private String getDynamicValue(final String key) {
+		String value = null;
+		if (key.length() == 1){
 	        switch (key.charAt(0)) {
 	            case 'B': {
 	                if (!card.isBlockModified) {
@@ -82,17 +86,17 @@ public class ChanneledCard extends AbstractOrb {
 	        }
     	}
 	    else {
-			Object value = null;
-			try {
-			Field field = card.getClass().getField(key);
-
-				value = field.get(card);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
+			DynamicVariable dv = BaseMod.cardDynamicVariableMap.get(key);
+			if (dv != null) {
+				if (dv.isModified(card)) {
+					if (dv.value(card) >= dv.baseValue(card)) {
+						value = "[#" + dv.getIncreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
+					} else {
+						value = "[#" + dv.getDecreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
+					}
+				} else {
+					value = Integer.toString(dv.baseValue(card));
+				}
 			}
 			return (String) value;
         }
