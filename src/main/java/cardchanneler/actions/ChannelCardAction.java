@@ -39,7 +39,7 @@ public class ChannelCardAction
                 isDone = true;
                 return;
             }
-            AbstractDungeon.handCardSelectScreen.open(TEXT[0], 1, false, true);
+            AbstractDungeon.handCardSelectScreen.open(TEXT[0], 1, true, true);
             tickDuration();
             return;
         }
