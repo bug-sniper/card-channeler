@@ -17,11 +17,13 @@ import com.badlogic.gdx.Input.Keys;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.actions.GameActionManager.Phase;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon.CurrentScreen;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.rooms.AbstractRoom.RoomPhase;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +71,14 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 
 	@Override
 	public void receivePostDungeonUpdate() {
+		if (AbstractDungeon.screen != CurrentScreen.NONE){
+			return;
+		}
+		if (AbstractDungeon.currMapNode.room.phase != RoomPhase.COMBAT){
+			return;
+		}
+		//If the above return conditions don't take effect, we are now
+		//updating from within the combat phase.
         for (int i = 0; i < AbstractDungeon.player.orbs.size(); ++i) {
             if (((AbstractOrb)AbstractDungeon.player.orbs.get(i)).ID == ChanneledCard.ORB_ID){
             	ChanneledCard orb = (ChanneledCard) AbstractDungeon.player.orbs.get(i);

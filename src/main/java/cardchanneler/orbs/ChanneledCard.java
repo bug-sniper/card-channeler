@@ -35,11 +35,13 @@ public class ChanneledCard extends AbstractOrb {
     public AbstractCard card = null;
     public static boolean beingEvoked = false;
     public static boolean orbBeingLost = false;
+    public AbstractMonster monsterTarget;
     
     public ChanneledCard(AbstractCard card) {
     	super();
         ID = ORB_ID;
         this.card = card;
+        monsterTarget = AbstractDungeon.getRandomMonster();
         name = orbString.NAME + " " + card.name;
         updateDescription();
     }
@@ -152,10 +154,9 @@ public class ChanneledCard extends AbstractOrb {
     @Override
     public void onEvoke() {
     	beingEvoked = true;
-    	AbstractMonster monster = AbstractDungeon.getRandomMonster();
-    	card.calculateCardDamage(monster);
-    	card.use(AbstractDungeon.player, monster);
-    	AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monster));
+    	card.calculateCardDamage(monsterTarget);
+    	card.use(AbstractDungeon.player, monsterTarget);
+    	AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
     }
 
     @Override
