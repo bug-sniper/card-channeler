@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.vfx.combat.*;
 import basemod.BaseMod;
 import basemod.abstracts.DynamicVariable;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
+import helpers.OrbTargettingStraightArrow;
 
 public class ChanneledCard extends AbstractOrb {
 	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
@@ -184,7 +185,9 @@ public class ChanneledCard extends AbstractOrb {
 	    card.drawScale = scale;
     	card.render(sb);
         hb.render(sb);
-        //InputHelper.getCardSelectedByHotkey();
+        sb.end();
+        OrbTargettingStraightArrow.drawArrow(this, monsterTarget);
+        sb.begin();
     }
 
     @Override
