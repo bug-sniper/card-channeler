@@ -11,6 +11,7 @@ import basemod.interfaces.PostDungeonUpdateSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
 import cardchanneler.orbs.ChanneledCard;
 import cardchanneler.relics.CardChannelerRelic;
+import helpers.OrbTargettingHelper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -67,6 +68,7 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
 			}
 		}
+		OrbTargettingHelper.update();
 	}
 
 	@Override

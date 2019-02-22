@@ -21,7 +21,12 @@ public class OrbTargettingHelper {
     static ChanneledCard draggedOrb = null;
     //static TargettingArrowFromOrb arrow = null;
 
-    private static void update() {
+    public static void update() {
+    	
+    	if (AbstractDungeon.player == null){
+    		return;
+    	}
+    	
         // start dragging
         if (draggedOrb == null && InputHelper.justClickedLeft) {
             for (AbstractOrb orb : AbstractDungeon.player.orbs) {
@@ -50,7 +55,8 @@ public class OrbTargettingHelper {
                     }
                 }
                 if (hoveredMonster != null){
-                	draggedOrb.monsterTarget = hoveredMonster; 
+                	draggedOrb.monsterTarget = hoveredMonster;
+                	draggedOrb = null;
                 }
         	}
         }
