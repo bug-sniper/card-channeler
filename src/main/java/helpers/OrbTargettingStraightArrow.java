@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -43,16 +42,9 @@ public class OrbTargettingStraightArrow {
 												   barbLength * (float)MathUtils.sin(higherAngle));
 		barbStartHigherAngle.add(end);
 		
+		
 		drawLine(barbStartLowerAngle, end, lineWidth, color);
 		drawLine(barbStartHigherAngle, end, lineWidth, color);
-		
-		if (orb.hb.hovered){
-			System.out.println(mainAngle);
-			System.out.println("start: " +start);
-			System.out.println("end: " + end);
-			System.out.println(barbStartLowerAngle);
-			System.out.println(barbStartHigherAngle);
-		}
 		
 	}
 	

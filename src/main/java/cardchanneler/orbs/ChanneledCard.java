@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.AbstractCard.CardTarget;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.OrbStrings;
@@ -168,7 +169,6 @@ public class ChanneledCard extends AbstractOrb {
     @Override
     public void updateAnimation() {
         super.updateAnimation();
-        angle += Gdx.graphics.getDeltaTime() * 45.0f;
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (this.vfxTimer < 0.0f) {
             AbstractDungeon.effectList.add(new ChanneledCardPassiveEffect(this.cX, this.cY));
@@ -185,9 +185,12 @@ public class ChanneledCard extends AbstractOrb {
 	    card.drawScale = scale;
     	card.render(sb);
         hb.render(sb);
-        sb.end();
-        OrbTargettingStraightArrow.drawArrow(this, monsterTarget);
-        sb.begin();
+        if (card.target == CardTarget.ENEMY ||
+        	card.target == CardTarget.SELF_AND_ENEMY){
+	        sb.end();
+	        OrbTargettingStraightArrow.drawArrow(this, monsterTarget);
+	        sb.begin();
+        }
     }
 
     @Override
