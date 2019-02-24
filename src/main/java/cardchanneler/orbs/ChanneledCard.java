@@ -18,8 +18,8 @@ import com.megacrit.cardcrawl.vfx.combat.*;
 
 import basemod.BaseMod;
 import basemod.abstracts.DynamicVariable;
+import cardchanneler.helpers.OrbTargettingStraightArrow;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
-import helpers.OrbTargettingStraightArrow;
 
 public class ChanneledCard extends AbstractOrb {
 	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
