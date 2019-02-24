@@ -1,4 +1,4 @@
-package helpers;
+package cardchanneler.helpers;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardTarget;
