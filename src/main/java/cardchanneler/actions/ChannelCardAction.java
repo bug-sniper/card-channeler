@@ -11,9 +11,13 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.ThoughtBubble;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
+
 import cardchanneler.orbs.ChanneledCard;
+import cardchanneler.patches.XCostEvokePatch;
+
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 
 public class ChannelCardAction
         extends AbstractGameAction
@@ -50,6 +54,11 @@ public class ChannelCardAction
                 if (card.canUse(player, monster)) {
                     final AbstractOrb orb = new ChanneledCard(card);
                     AbstractDungeon.actionManager.addToTop(new ChannelAction(orb));
+                    if (card.cost == -1){
+                    	//X-cost card
+                    	XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, EnergyPanel.totalCount);
+                    	player.energy.use(EnergyPanel.totalCount);
+                    }
                     if (card.costForTurn > 0 && !card.freeToPlayOnce && (!player.hasPower("Corruption") || card.type != AbstractCard.CardType.SKILL)) {
                         player.energy.use(card.costForTurn);
                     }
