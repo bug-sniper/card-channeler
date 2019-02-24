@@ -1,8 +1,5 @@
 package cardchanneler.orbs;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -22,7 +19,6 @@ import cardchanneler.helpers.OrbTargettingStraightArrow;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
 
 public class ChanneledCard extends AbstractOrb {
-	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
 	
     // Standard ID/Description
     public static final String ORB_ID = "CardChanneler:ChanneledCard";
@@ -50,58 +46,20 @@ public class ChanneledCard extends AbstractOrb {
     
 	private String getDynamicValue(final String key) {
 		String value = null;
-		if (key.length() == 1){
-	        switch (key.charAt(0)) {
-	            case 'B': {
-	                if (!card.isBlockModified) {
-	                    return Integer.toString(card.baseBlock);
-	                }
-	                if (card.block >= card.baseBlock) {
-	                    return "[#7fff00]" + Integer.toString(card.block) + "[]";
-	                }
-	                return "[#ff6563]" + Integer.toString(card.block) + "[]";
-	            }
-	            case 'D': {
-	                if (!card.isDamageModified) {
-	                    return Integer.toString(card.baseDamage);
-	                }
-	                if (card.damage >= card.baseDamage) {
-	                    return "[#7fff00]" + Integer.toString(card.damage) + "[]";
-	                }
-	                return "[#ff6563]" + Integer.toString(card.damage) + "[]";
-	            }
-	            case 'M': {
-	                if (!card.isMagicNumberModified) {
-	                    return Integer.toString(card.baseMagicNumber);
-	                }
-	                if (card.magicNumber >= card.baseMagicNumber) {
-	                    return "[#7fff00]" + Integer.toString(card.magicNumber) + "[]";
-	                }
-	                return "[#ff6563]" + Integer.toString(card.magicNumber) + "[]";
-	            }
-	            default: {
-	                ChanneledCard.logger.info("KEY: " + key);
-	                return Integer.toString(-99);
-	            }
-	        }
-    	}
-	    else {
-			DynamicVariable dv = BaseMod.cardDynamicVariableMap.get(key);
-			if (dv != null) {
-				if (dv.isModified(card)) {
-					if (dv.value(card) >= dv.baseValue(card)) {
-						value = "[#" + dv.getIncreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
-					} else {
-						value = "[#" + dv.getDecreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
-					}
+		DynamicVariable dv = BaseMod.cardDynamicVariableMap.get(key);
+		if (dv != null) {
+			if (dv.isModified(card)) {
+				if (dv.value(card) >= dv.baseValue(card)) {
+					value = "[#" + dv.getIncreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
 				} else {
-					value = Integer.toString(dv.baseValue(card));
+					value = "[#" + dv.getDecreasedValueColor().toString() + "]" + Integer.toString(dv.value(card)) + "[]";
 				}
+			} else {
+				value = Integer.toString(dv.baseValue(card));
 			}
-			logger.info(key + " is " + value);
-			return (String) value;
-        }
-    }
+		}
+		return (String) value;
+	}
 
     // Set the on-hover description of the orb
     @Override
