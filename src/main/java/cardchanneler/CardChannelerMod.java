@@ -70,13 +70,6 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 	@Override
 	public void receivePostDungeonUpdate() {
 		
-		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
-			if (Gdx.input.isKeyJustPressed(Keys.C) && !DevConsole.visible) {
-				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
-			}
-		}
-		OrbTargettingHelper.update();
-		
 		if (AbstractDungeon.screen != CurrentScreen.NONE){
 			return;
 		}
@@ -94,6 +87,12 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
         	ChanneledCard.beingEvoked = false;
+    		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
+    			if (Gdx.input.isKeyJustPressed(Keys.C) && !DevConsole.visible) {
+    				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
+    			}
+    		}
+    		OrbTargettingHelper.update();
         }
 	}
 }
