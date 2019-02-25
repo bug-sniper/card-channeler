@@ -126,7 +126,8 @@ public class ChanneledCard extends AbstractOrb {
 		card.use(AbstractDungeon.player, monsterTarget);
 		AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
 		if (card.cost == -1){
-			EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue);
+			int owedEnergy = EnergyPanel.getCurrentEnergy() - XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
+			EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue + owedEnergy);
 			XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
 			card.freeToPlayOnce = false;
 			XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, XCostEvokePatch.DEFAULT_COST);
