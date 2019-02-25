@@ -19,6 +19,7 @@ public class OrbTargettingHelper {
 
     public static void update() {
     	if (AbstractDungeon.getMonsters() == null){
+    		//You've already won the battle.
     		return;
     	}
     	
@@ -28,7 +29,7 @@ public class OrbTargettingHelper {
                 if (orb.hb.hovered && orb.ID == ChanneledCard.ORB_ID) {
                 	AbstractCard card = ((ChanneledCard)orb).card;
                 	if (card.target == CardTarget.ENEMY ||
-                		card.target == CardTarget.ENEMY){
+                		card.target == CardTarget.SELF_AND_ENEMY){
 	                    draggedOrb = (ChanneledCard) orb;
 	                    break;
                 	}
