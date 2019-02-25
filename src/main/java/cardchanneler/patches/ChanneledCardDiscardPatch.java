@@ -97,7 +97,6 @@ public class ChanneledCardDiscardPatch {
             return new ExprEditor() {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
-                	System.out.println("patching " + m.getMethodName());
                     if (m.getMethodName().equals("moveToDeck") ||
                     	m.getMethodName().equals("moveToDiscardPile")) {
                         m.replace("if(!((Boolean)" +

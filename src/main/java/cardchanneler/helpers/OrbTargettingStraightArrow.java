@@ -1,4 +1,4 @@
-package helpers;
+package cardchanneler.helpers;
 
 import org.lwjgl.opengl.GL11;
 

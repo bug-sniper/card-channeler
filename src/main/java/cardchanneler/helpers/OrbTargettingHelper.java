@@ -1,4 +1,4 @@
-package helpers;
+package cardchanneler.helpers;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardTarget;
@@ -18,13 +18,6 @@ public class OrbTargettingHelper {
     }
 
     public static void update() {
-    	
-//    	if (AbstractDungeon.player == null){
-//    		return;
-//    	}
-//    	if (arrow == null){
-//			return;
-//		}
     	if (AbstractDungeon.getMonsters() == null){
     		return;
     	}
@@ -59,9 +52,9 @@ public class OrbTargettingHelper {
         	if (InputHelper.justReleasedClickLeft) {
                 if (arrow.hoveredCreature != null){
                 	draggedOrb.monsterTarget = (AbstractMonster) arrow.hoveredCreature;
-                	draggedOrb = null;
-                	arrow.isHidden = true;
                 }
+            	draggedOrb = null;
+            	arrow.isHidden = true;
         	}
         }
     }
