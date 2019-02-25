@@ -21,7 +21,6 @@ import cardchanneler.patches.XCostEvokePatch;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
 
 public class ChanneledCard extends AbstractOrb {
-	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
 
 	// Standard ID/Description
 	public static final String ORB_ID = "CardChanneler:ChanneledCard";
@@ -119,7 +118,6 @@ public class ChanneledCard extends AbstractOrb {
 		beingEvoked = true;
 		if (card.cost == -1){
 			//Special code required to handle when the player's energy is used for X cost cards
-			logger.info("saying that card is being evoked");
 			XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
 			EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
 			card.freeToPlayOnce = true;
