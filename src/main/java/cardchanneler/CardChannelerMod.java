@@ -1,4 +1,3 @@
-
 package cardchanneler;
 
 import basemod.BaseMod;
@@ -9,10 +8,10 @@ import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
 import basemod.interfaces.PostDungeonUpdateSubscriber;
 import basemod.interfaces.PostUpdateSubscriber;
+import cardchanneler.helpers.DottedArrowFromOrb;
+import cardchanneler.helpers.OrbTargettingHelper;
 import cardchanneler.orbs.ChanneledCard;
 import cardchanneler.relics.CardChannelerRelic;
-import helpers.DottedArrowFromOrb;
-import helpers.OrbTargettingHelper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -70,13 +69,6 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 	@Override
 	public void receivePostDungeonUpdate() {
 		
-		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
-			if (Gdx.input.isKeyJustPressed(Keys.C) && !DevConsole.visible) {
-				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
-			}
-		}
-		OrbTargettingHelper.update();
-		
 		if (AbstractDungeon.screen != CurrentScreen.NONE){
 			return;
 		}
@@ -94,6 +86,12 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
         	ChanneledCard.beingEvoked = false;
+    		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
+    			if (Gdx.input.isKeyJustPressed(Keys.C) && !DevConsole.visible) {
+    				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
+    			}
+    		}
+    		OrbTargettingHelper.update();
         }
 	}
 }

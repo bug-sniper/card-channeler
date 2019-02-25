@@ -1,4 +1,4 @@
-package helpers;
+package cardchanneler.helpers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

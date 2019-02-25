@@ -19,9 +19,9 @@ import com.megacrit.cardcrawl.vfx.combat.*;
 
 import basemod.BaseMod;
 import basemod.abstracts.DynamicVariable;
+import cardchanneler.helpers.OrbTargettingStraightArrow;
 import cardchanneler.patches.XCostEvokePatch;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
-import helpers.OrbTargettingStraightArrow;
 
 public class ChanneledCard extends AbstractOrb {
 	private static final Logger logger = LogManager.getLogger(ChanneledCard.class.getName());
@@ -39,8 +39,6 @@ public class ChanneledCard extends AbstractOrb {
 	public AbstractCard card = null;
 	public static boolean beingEvoked = false;
 	public static boolean orbBeingLost = false;
-	public static Integer DEFAULT_ENERGY_VALUE = -998;
-	public static int oldEnergy = DEFAULT_ENERGY;
 	public AbstractMonster monsterTarget;
 
 	public ChanneledCard(AbstractCard card) {
@@ -121,17 +119,23 @@ public class ChanneledCard extends AbstractOrb {
 
 	@Override
 	public void onEvoke() {
-		int oldEnergy = DEFAULT_ENERGY_VALUE;
 		beingEvoked = true;
 		if (card.cost == -1){
 			//Special code required to handle when the player's energy is used for X cost cards
 			logger.info("saying that card is being evoked");
-			oldEnergy = EnergyPanel.getCurrentEnergy();
+			XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
 			EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
+			card.freeToPlayOnce = true;
 		}
 		card.calculateCardDamage(monsterTarget);
 		card.use(AbstractDungeon.player, monsterTarget);
 		AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
+		if (card.cost == -1){
+			EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue);
+			XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
+			card.freeToPlayOnce = false;
+			XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, XCostEvokePatch.DEFAULT_COST);
+		}
 	}
 
 	@Override

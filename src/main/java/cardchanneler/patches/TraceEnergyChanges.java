@@ -20,8 +20,12 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
         method="useEnergy"	
 )
 public class TraceEnergyChanges {
+	public static final boolean DEBUG = false;
 	private static Logger logger = LogManager.getLogger(TraceEnergyChanges.class.getName());
     public static SpireReturn Prefix(int e) {	
+    	if (!DEBUG){
+    		return SpireReturn.Continue();
+    	}
         logger.info("interacting with energy with " + e);
         Thread.dumpStack();
     	return SpireReturn.Continue();		
