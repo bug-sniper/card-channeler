@@ -1,4 +1,3 @@
-
 package cardchanneler;
 
 import basemod.BaseMod;

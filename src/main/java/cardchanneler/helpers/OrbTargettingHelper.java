@@ -18,7 +18,6 @@ public class OrbTargettingHelper {
     }
 
     public static void update() {
-    	
     	if (AbstractDungeon.getMonsters() == null){
     		//You've already won the battle.
     		return;
