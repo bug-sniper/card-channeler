@@ -163,6 +163,7 @@ public class ChanneledCard extends AbstractOrb {
 			sb.end();
 			OrbTargettingStraightArrow.drawArrow(this, monsterTarget);
 			sb.begin();
+			card.renderCardTip(sb);
 		}
 	}
 

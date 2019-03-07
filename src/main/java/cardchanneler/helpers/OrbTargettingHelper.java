@@ -3,6 +3,8 @@ package cardchanneler.helpers;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardTarget;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
@@ -55,6 +57,19 @@ public class OrbTargettingHelper {
             }
         }
     }
+    
+    private static boolean pressedCancelKey(){
+    	if (InputActionSet.cancel.isJustPressed() || 
+    	    CInputActionSet.cancel.isJustPressed()) {
+    	    	return true;
+    	    }
+    	for (int i = 0; i < 10; i++) {
+    		if (InputActionSet.selectCardActions[i].isJustPressed()){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
     public static void update() {
     	if (AbstractDungeon.getMonsters() == null){
@@ -84,7 +99,7 @@ public class OrbTargettingHelper {
 	    		break;
 	    	case DRAGGING_OFF_ORB:
 	        	setHoveredCreatureFromMouse();
-	        	if (InputHelper.justReleasedClickLeft){
+	        	if (InputHelper.justReleasedClickLeft || pressedCancelKey()){
 	        		if (arrow.hoveredCreature == null){
 	        			//The played cancelled targetting
 	        		} else{
@@ -97,15 +112,19 @@ public class OrbTargettingHelper {
 	        	break;
 	    	case NON_DRAG_TARGETTING:
 	    		setHoveredCreatureFromMouse();
-	    		if (InputHelper.justReleasedClickLeft){
+	    		if (pressedCancelKey()){
+    				arrow.isHidden = true;
+    				state = State.START;
+	    		} else if (InputHelper.justReleasedClickLeft){
 	        		if (arrow.hoveredCreature == null){
 	        			//The played cancelled targetting
 	        			setSelectedOrb();
 	        			if (selectedOrb == null){
-	        				//The play picked another orb to target with
+	        				//The play did not pick another orb to target with
 	        				arrow.isHidden = true;
 	        				state = State.START;
 	        			} else {
+	        				//The play picked another orb to target with
 	        				arrow.setOrb(selectedOrb);
 	        			}
 	        		} else{
