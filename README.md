@@ -1,4 +1,4 @@
-# card-channel-mod
+# card-channeler-mod
 A Slay the Spire mod that allows you to channel cards into your orb slots. Channeled cards are unaffected by focus and have no passive effect. When they are evoked, the card is played for free; the casting cost is paid instead when the card is channeled.
 
 Special thanks to:
