@@ -29,8 +29,8 @@ public class ChanneledCard extends AbstractOrb {
 	// Animation Rendering Numbers - You can leave these at default, or play around with them and see what they change.
 	public static final float scale = 0.2f;
 	private float vfxTimer = 1.0f;
-	private float vfxIntervalMin = 0.1f;
-	private float vfxIntervalMax = 0.4f;
+	private float vfxIntervalMin = 0.025f;
+	private float vfxIntervalMax = 0.1f;
 
 	public AbstractCard card = null;
 	public static boolean beingEvoked = false;

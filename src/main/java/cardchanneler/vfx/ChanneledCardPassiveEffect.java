@@ -29,19 +29,24 @@ public class ChanneledCardPassiveEffect extends AbstractGameEffect
         effectDuration = MathUtils.random(0.4f, 0.8f);
         duration = effectDuration;
         startingDuration = effectDuration;
-        orbWidth = ChanneledCard.scale*AbstractCard.IMG_WIDTH * 0.8f;
-        float offsetX = MathUtils.random(-orbWidth/2, orbWidth/2);
-        offsetX -= img.packedWidth / 2;
+        orbWidth = ChanneledCard.scale*AbstractCard.IMG_WIDTH * 0.85f;
+        float rndX = MathUtils.random(-orbWidth/2, orbWidth/2);
+        float offsetX = rndX - img.packedWidth / 2;
         this.x = x + offsetX;
         vX = MathUtils.random(-3.0f, 3.0f) * Settings.scale;
-        orbHeight = ChanneledCard.scale*AbstractCard.IMG_HEIGHT * 0.7f;
-        float offsetY = MathUtils.random(-orbHeight/2, orbHeight/2);
-        offsetY -= img.packedHeight / 2;
+        orbHeight = ChanneledCard.scale*AbstractCard.IMG_HEIGHT * 0.85f;
+        float rndY = MathUtils.random(-orbHeight/2, orbHeight/2);
+        float offsetY = rndY - img.packedHeight / 2;
         this.y = y + offsetY;
         vY = MathUtils.random(-3.0f, 3.0f) * Settings.scale;
         alpha = MathUtils.random(0.5f, 1.0f);
-        color = new Color(MathUtils.random(0.6f, 0.9f), 1.0f, 1.0f, alpha);
+        color = new Color(1.0f, 1.0f, 1.0f, alpha);
         scale = MathUtils.random(0.5f, 1.2f) * Settings.scale;
+        
+        if ((rndX > -orbWidth/2.05 && rndX < orbWidth/2.05) &&
+        	(rndY > -orbHeight/2.05 && rndY < orbHeight/2.05)){
+        	isDone = true;
+        }
     }
     
     @Override
