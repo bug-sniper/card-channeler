@@ -83,7 +83,7 @@ public class ChanneledCardDiscardPatch {
 				
 		        BeingRetainedAsOrbField.beingRetainedAsOrb.set(
 		        		card, false);
-		        
+
 	    	} catch (IllegalAccessException e){
 	    		e.printStackTrace();
 	    	} catch (NoSuchFieldException e) {
@@ -98,7 +98,8 @@ public class ChanneledCardDiscardPatch {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
                     if (m.getMethodName().equals("moveToDeck") ||
-                    	m.getMethodName().equals("moveToDiscardPile")) {
+                    	m.getMethodName().equals("moveToDiscardPile") ||
+                    	m.getMethodName().equals("moveToExhaustPile")) {
                         m.replace("if(!((Boolean)" +
                     	BeingRetainedAsOrbField.class.getName() + 
                     	".beingRetainedAsOrb.get(targetCard)).booleanValue())" +

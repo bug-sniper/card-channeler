@@ -80,8 +80,12 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         for (int i = 0; i < AbstractDungeon.player.orbs.size(); ++i) {
             if (((AbstractOrb)AbstractDungeon.player.orbs.get(i)).ID == ChanneledCard.ORB_ID){
             	ChanneledCard orb = (ChanneledCard) AbstractDungeon.player.orbs.get(i);
+            	orb.card.setAngle(0, true);
             	orb.card.applyPowers();
             	orb.updateDescription();
+            	if (orb.monsterTarget.isDeadOrEscaped()){
+            		orb.monsterTarget = AbstractDungeon.getRandomMonster();
+            	}
             }
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){

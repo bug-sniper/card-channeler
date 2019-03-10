@@ -26,20 +26,27 @@ public class ChanneledCard extends AbstractOrb {
 	public static final String ORB_ID = "CardChanneler:ChanneledCard";
 	private static final OrbStrings orbString = CardCrawlGame.languagePack.getOrbString(ORB_ID);
 
-	// Animation Rendering Numbers - You can leave these at default, or play around with them and see what they change.
+	// Animation Rendering Numbers
 	public static final float scale = 0.2f;
 	private float vfxTimer = 1.0f;
 	private float vfxIntervalMin = 0.025f;
 	private float vfxIntervalMax = 0.1f;
 
 	public AbstractCard card = null;
+	
+	//beingEvoked tells to CardEvokationIgnoresThornsPatch to
+	//prevent thorns from hurting you because an orb is doing the damage.
 	public static boolean beingEvoked = false;
+	
+	//orbBeingLost tells ChanneledCardDiscardPatch to not let
+	//cards go to the discard or draw pile if they will return
 	public static boolean orbBeingLost = false;
 	public AbstractMonster monsterTarget;
 
 	public ChanneledCard(AbstractCard card) {
 		super();
 		ID = ORB_ID;
+		card.setAngle(0, true);
 		this.card = card;
 		monsterTarget = AbstractDungeon.getRandomMonster();
 		name = orbString.NAME + " " + card.name;
@@ -115,6 +122,11 @@ public class ChanneledCard extends AbstractOrb {
 
 	@Override
 	public void onEvoke() {
+		if (monsterTarget.isDeadOrEscaped()){
+			//Let the orb have an effect, even if the player forgot to pick a
+			//new target
+			monsterTarget = AbstractDungeon.getRandomMonster();
+		}
 		beingEvoked = true;
 		if (card.cost == -1){
 			//Special code required to handle when the player's energy is used for X cost cards
