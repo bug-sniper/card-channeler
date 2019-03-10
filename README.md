@@ -13,6 +13,6 @@ To do:
 * Handle longer card names
 * Make channel key configurable
 
-Feel free to use parts of this mod in other mods.
+Feel free to reuse parts of this mod in other mods.
 
 ![Card Channeler Mod](card-channeler-mod.png)
