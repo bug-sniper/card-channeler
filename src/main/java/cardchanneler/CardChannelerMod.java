@@ -1,7 +1,6 @@
 package cardchanneler;
 
 import basemod.BaseMod;
-import basemod.DevConsole;
 import basemod.helpers.RelicType;
 import basemod.interfaces.EditRelicsSubscriber;
 import basemod.interfaces.EditStringsSubscriber;
@@ -14,7 +13,6 @@ import cardchanneler.orbs.ChanneledCard;
 import cardchanneler.relics.CardChannelerRelic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.actions.GameActionManager.Phase;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -45,8 +43,6 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         BaseMod.loadCustomStrings(RelicStrings.class, relicStrings);
         final String orbStrings = Gdx.files.internal("localization/OrbStrings.json").readString("UTF-8");
         BaseMod.loadCustomStrings(OrbStrings.class, orbStrings);
-        final String uiStrings = Gdx.files.internal("localization/UIStrings.json").readString("UTF-8");
-        BaseMod.loadCustomStrings(UIStrings.class, uiStrings);
         logger.info("Done editing strings");
     }
 
@@ -89,12 +85,6 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
             }
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
-        	ChanneledCard.beingEvoked = false;
-    		if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) {
-    			if (Gdx.input.isKeyJustPressed(Keys.C) && !DevConsole.visible) {
-    				((CardChannelerRelic) AbstractDungeon.player.getRelic(CardChannelerRelic.ID)).invoke();
-    			}
-    		}
     		OrbTargettingHelper.update();
         }
 	}

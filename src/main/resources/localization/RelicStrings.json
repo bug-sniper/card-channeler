@@ -3,7 +3,7 @@
     "NAME": "Card Channeler",
     "FLAVOR": "A relic that lets you channel a card.",
     "DESCRIPTIONS": [
-      "Right-click this relic or press 'C' to channel a playable card into an orb slot while paying its energy cost."
+      "By holding down the Ctrl key, you may channel a card instead of playing it."
     ]
   }
 }

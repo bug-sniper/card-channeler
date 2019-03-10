@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.ThoughtBubble;
 
 import cardchanneler.orbs.ChanneledCard;
+import cardchanneler.relics.CardChannelerRelic;
 
 @SpirePatch(	
         clz=AbstractPlayer.class,	
@@ -35,9 +36,11 @@ public class ChannelByHoldingDownKeyPatch {
         return false;
     }
 	
-    public static SpireReturn Prefix(AbstractPlayer __instance) {
-        if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)||
-        	Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)){
+    public static SpireReturn<?> Prefix(AbstractPlayer __instance) {
+        if ((AbstractDungeon.player != null &&
+        	 AbstractDungeon.player.hasRelic(CardChannelerRelic.ID)) &&
+        		(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)||
+        		 Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))){
             InputHelper.justClickedLeft = false;
             __instance.hoverEnemyWaitTimer = 1.0f;
             AbstractCard card = __instance.hoveredCard;

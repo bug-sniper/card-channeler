@@ -10,7 +10,7 @@ Special thanks to:
 
 To do:
 
-* Add a way to channel more seamlessly
 * Handle longer card names
+* Make channel key configurable
 
 ![Card Channeler Mod](card-channeler-mod.png)
