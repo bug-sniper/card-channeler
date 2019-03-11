@@ -128,11 +128,11 @@ public class ChanneledCard extends AbstractOrb {
 			monsterTarget = AbstractDungeon.getRandomMonster();
 		}
 		beingEvoked = true;
+		card.freeToPlayOnce = true;
 		if (card.cost == -1){
 			//Special code required to handle when the player's energy is used for X cost cards
 			XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
 			EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
-			card.freeToPlayOnce = true;
 		}
 		card.calculateCardDamage(monsterTarget);
 		card.use(AbstractDungeon.player, monsterTarget);
@@ -141,9 +141,9 @@ public class ChanneledCard extends AbstractOrb {
 			int owedEnergy = EnergyPanel.getCurrentEnergy() - XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
 			EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue + owedEnergy);
 			XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
-			card.freeToPlayOnce = false;
 			XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, XCostEvokePatch.DEFAULT_COST);
 		}
+		card.freeToPlayOnce = false;
 	}
 
 	@Override
