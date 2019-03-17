@@ -1,4 +1,4 @@
-package theDefault.patches.relics;
+package cardchanneler.patches;
 
 import java.lang.reflect.Field;
 
@@ -93,13 +93,13 @@ public class TipWithWrappingNamePatch {
                 rloc=0,
                 localvars={"textHeight"}
         )
-        public static void Insert(float x, float y, SpriteBatch sb, String title, String description, @ByRef float[] textHeight){
+        public static void Insert(SpriteBatch sb, String word, float x, float y, @ByRef float[] textHeight){
         	if (TipWithWrappingNamePatch.BODY_TEXT_WIDTH == 0){
         		getConstants();
         	}
         	TipWithWrappingNamePatch.headerHeight = -FontHelper.getSmartHeight(
         			FontHelper.tipHeaderFont, 
-        			title, 
+        			TipHelper.capitalize(word), 
         			BODY_TEXT_WIDTH, 
         			TIP_DESC_LINE_SPACING + (
         					FontHelper.getHeight(FontHelper.tipHeaderFont, "x", Settings.scale) -
