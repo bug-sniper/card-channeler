@@ -38,7 +38,7 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
 
     @Override
     public void receiveEditStrings() {
-    	logger.info("Editing strings");
+        logger.info("Editing strings");
         final String relicStrings = Gdx.files.internal("localization/RelicStrings.json").readString("UTF-8");
         BaseMod.loadCustomStrings(RelicStrings.class, relicStrings);
         final String orbStrings = Gdx.files.internal("localization/OrbStrings.json").readString("UTF-8");
@@ -58,34 +58,34 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         RelicLibrary.getRelic(CardChannelerRelic.ID).makeCopy().instantObtain();
     }
 
-	@Override
-	public void receivePostUpdate() {
-	}
+    @Override
+    public void receivePostUpdate() {
+    }
 
-	@Override
-	public void receivePostDungeonUpdate() {
-		
-		if (AbstractDungeon.screen != CurrentScreen.NONE){
-			return;
-		}
-		if (AbstractDungeon.currMapNode.room.phase != RoomPhase.COMBAT){
-			return;
-		}
-		//If the above return conditions don't take effect, we are now
-		//updating from within the combat phase.
+    @Override
+    public void receivePostDungeonUpdate() {
+        
+        if (AbstractDungeon.screen != CurrentScreen.NONE){
+            return;
+        }
+        if (AbstractDungeon.currMapNode.room.phase != RoomPhase.COMBAT){
+            return;
+        }
+        //If the above return conditions don't take effect, we are now
+        //updating from within the combat phase.
         for (int i = 0; i < AbstractDungeon.player.orbs.size(); ++i) {
             if (((AbstractOrb)AbstractDungeon.player.orbs.get(i)).ID == ChanneledCard.ORB_ID){
-            	ChanneledCard orb = (ChanneledCard) AbstractDungeon.player.orbs.get(i);
-            	orb.card.setAngle(0, true);
-            	orb.card.applyPowers();
-            	orb.updateDescription();
-            	if (orb.monsterTarget.isDeadOrEscaped()){
-            		orb.monsterTarget = AbstractDungeon.getRandomMonster();
-            	}
+                ChanneledCard orb = (ChanneledCard) AbstractDungeon.player.orbs.get(i);
+                orb.card.setAngle(0, true);
+                orb.card.applyPowers();
+                orb.updateDescription();
+                if (orb.monsterTarget.isDeadOrEscaped()){
+                    orb.monsterTarget = AbstractDungeon.getRandomMonster();
+                }
             }
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
-    		OrbTargettingHelper.update();
+            OrbTargettingHelper.update();
         }
-	}
+    }
 }

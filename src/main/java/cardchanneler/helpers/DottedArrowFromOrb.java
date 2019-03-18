@@ -12,25 +12,25 @@ import basemod.interfaces.RenderSubscriber;
 import cardchanneler.orbs.ChanneledCard;
 
 public class DottedArrowFromOrb implements RenderSubscriber{
-	public boolean isHidden = true;
-	private Vector2 start;
-	private Vector2 controlPoint;
-	AbstractCreature hoveredCreature = null;
-	private float arrowScale;
-	private float arrowScaleTimer;
-	private Vector2[] points = new Vector2[20];
-	
-	public DottedArrowFromOrb(){
+    public boolean isHidden = true;
+    private Vector2 start;
+    private Vector2 controlPoint;
+    AbstractCreature hoveredCreature = null;
+    private float arrowScale;
+    private float arrowScaleTimer;
+    private Vector2[] points = new Vector2[20];
+    
+    public DottedArrowFromOrb(){
         for (int i = 0; i < this.points.length; i++) {
             this.points[i] = new Vector2();
         }
         BaseMod.subscribe(this);
-	}
-	
-	public void setOrb(ChanneledCard orb){
-		start = new Vector2(orb.cX, orb.cY);
-	}
-	
+    }
+    
+    public void setOrb(ChanneledCard orb){
+        start = new Vector2(orb.cX, orb.cY);
+    }
+    
     public void render(SpriteBatch sb)
     {
         if (!isHidden) {
@@ -90,8 +90,8 @@ public class DottedArrowFromOrb implements RenderSubscriber{
         }
     }
 
-	@Override
-	public void receiveRender(SpriteBatch sb) {
-		render(sb);
-	}
+    @Override
+    public void receiveRender(SpriteBatch sb) {
+        render(sb);
+    }
 }

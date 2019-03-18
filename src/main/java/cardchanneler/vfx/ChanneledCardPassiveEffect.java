@@ -44,8 +44,8 @@ public class ChanneledCardPassiveEffect extends AbstractGameEffect
         scale = MathUtils.random(0.5f, 1.2f) * Settings.scale;
         
         if ((rndX > -orbWidth/2.05 && rndX < orbWidth/2.05) &&
-        	(rndY > -orbHeight/2.05 && rndY < orbHeight/2.05)){
-        	isDone = true;
+            (rndY > -orbHeight/2.05 && rndY < orbHeight/2.05)){
+            isDone = true;
         }
     }
     
