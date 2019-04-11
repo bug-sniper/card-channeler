@@ -2,7 +2,7 @@
   "CardChanneler:ChanneledCard": {
     "NAME": "Channeled",
     "DESCRIPTION": [
-      "#yPassive: Does nothing. NL #yEvoke: "
+      "#yEvoke: "
     ]
   }
 }
