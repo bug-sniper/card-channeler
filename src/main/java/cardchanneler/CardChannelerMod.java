@@ -79,7 +79,7 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
                 orb.card.setAngle(0, true);
                 orb.card.applyPowers();
                 orb.updateDescription();
-                if (orb.monsterTarget.isDeadOrEscaped()){
+                if (orb.monsterTarget != null && orb.monsterTarget.isDeadOrEscaped()){
                     orb.monsterTarget = AbstractDungeon.getRandomMonster();
                 }
             }

@@ -46,6 +46,7 @@ public class ChanneledCard extends AbstractOrb {
     public ChanneledCard(AbstractCard card) {
         super();
         ID = ORB_ID;
+        card.exhaust = false;
         card.setAngle(0, true);
         this.card = card;
         monsterTarget = AbstractDungeon.getRandomMonster();
@@ -78,7 +79,7 @@ public class ChanneledCard extends AbstractOrb {
         card.initializeDescription();
         String descriptionFragment = "";
         for (int i=0; i<card.description.size(); i++){
-            descriptionFragment = card.description.get(i).text;
+            descriptionFragment = card.description.get(i).getText();
             for (String word : descriptionFragment.split(" ")) {
                 if (firstWord){
                     firstWord = false;
@@ -129,10 +130,13 @@ public class ChanneledCard extends AbstractOrb {
         }
         beingEvoked = true;
         card.freeToPlayOnce = true;
+        int oldEnergyOnUse = -1;
         if (card.cost == -1){
             //Special code required to handle when the player's energy is used for X cost cards
             XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
             EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
+            oldEnergyOnUse = card.energyOnUse;
+            card.energyOnUse = EnergyPanel.totalCount;
         }
         card.calculateCardDamage(monsterTarget);
         card.use(AbstractDungeon.player, monsterTarget);
@@ -142,6 +146,7 @@ public class ChanneledCard extends AbstractOrb {
             EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue + owedEnergy);
             XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
             XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, XCostEvokePatch.DEFAULT_COST);
+            card.energyOnUse = oldEnergyOnUse;
         }
         card.freeToPlayOnce = false;
     }
@@ -170,8 +175,9 @@ public class ChanneledCard extends AbstractOrb {
         card.drawScale = scale;
         card.render(sb);
         hb.render(sb);
-        if (card.target == CardTarget.ENEMY ||
-                card.target == CardTarget.SELF_AND_ENEMY){
+        if ((card.target == CardTarget.ENEMY || card.target == CardTarget.SELF_AND_ENEMY) &&
+        		monsterTarget != null &&
+        		monsterTarget.hb != null){
             sb.end();
             OrbTargettingStraightArrow.drawArrow(this, monsterTarget);
             sb.begin();
