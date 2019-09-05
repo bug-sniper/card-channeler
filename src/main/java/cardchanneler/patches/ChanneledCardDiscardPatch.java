@@ -65,48 +65,4 @@ public class ChanneledCardDiscardPatch {
             }
         }
     }
-    
-    @SpirePatch(
-            clz=UseCardAction.class,
-            method="update"
-    )
-    public static class DecideWhetherToDiscard {
-        
-        public static void Postfix(UseCardAction __instance)
-        {   
-            try{
-                //targetCard is private but needs to be accessed
-                Field f = __instance.getClass().getDeclaredField("targetCard");
-                f.setAccessible(true);
-                AbstractCard card = null;
-                card = (AbstractCard) f.get(__instance);
-                
-                BeingRetainedAsOrbField.beingRetainedAsOrb.set(
-                        card, false);
-
-            } catch (IllegalAccessException e){
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        public static ExprEditor Instrument() {
-            return new ExprEditor() {
-                @Override
-                public void edit(MethodCall m) throws CannotCompileException {
-                    if (m.getMethodName().equals("moveToDeck") ||
-                        m.getMethodName().equals("moveToDiscardPile") ||
-                        m.getMethodName().equals("moveToExhaustPile")) {
-                        m.replace("if(!((Boolean)" +
-                        BeingRetainedAsOrbField.class.getName() + 
-                        ".beingRetainedAsOrb.get(targetCard)).booleanValue())" +
-                        "{$_ = $proceed($$);}");
-                    }
-                }
-            };
-        }
-    }
 }

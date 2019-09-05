@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardTarget;
+import com.megacrit.cardcrawl.cards.CardQueueItem;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.OrbStrings;
@@ -46,7 +47,7 @@ public class ChanneledCard extends AbstractOrb {
     public ChanneledCard(AbstractCard card) {
         super();
         ID = ORB_ID;
-        card.exhaust = false;
+//        card.exhaust = false;
         card.setAngle(0, true);
         this.card = card;
         monsterTarget = AbstractDungeon.getRandomMonster();
@@ -129,24 +130,24 @@ public class ChanneledCard extends AbstractOrb {
             monsterTarget = AbstractDungeon.getRandomMonster();
         }
         beingEvoked = true;
-        card.freeToPlayOnce = true;
-        int oldEnergyOnUse = -1;
+        if (card.cost > 0) {
+        	card.freeToPlayOnce = true;
+        }
         if (card.cost == -1){
             //Special code required to handle when the player's energy is used for X cost cards
             XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
+            System.out.println("Setting panel to " + XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
             EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
-            oldEnergyOnUse = card.energyOnUse;
-            card.energyOnUse = EnergyPanel.totalCount;
+            card.energyOnUse = XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
         }
         card.calculateCardDamage(monsterTarget);
         card.use(AbstractDungeon.player, monsterTarget);
-        AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
+//        AbstractDungeon.actionManager.cardQueue.add(new CardQueueItem(card, monsterTarget, card.energyOnUse, true));
+//        AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
         if (card.cost == -1){
             int owedEnergy = EnergyPanel.getCurrentEnergy() - XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
             EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue + owedEnergy);
             XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
-            XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, XCostEvokePatch.DEFAULT_COST);
-            card.energyOnUse = oldEnergyOnUse;
         }
         card.freeToPlayOnce = false;
     }

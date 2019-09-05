@@ -35,7 +35,7 @@ public class TraceTempestEffect {
         f2.setAccessible(true);
         int energy = -1;
 		try {
-			energy = f2.getInt("energyOnUse");
+			energy = f2.getInt(__instance);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
