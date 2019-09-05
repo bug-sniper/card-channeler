@@ -50,7 +50,7 @@ public class UseChanneledCardAction extends UseCardAction {
             }
             targetCard.freeToPlayOnce = false;
             if (targetCard.purgeOnUse) {
-                AbstractDungeon.actionManager.addToTop(new ShowCardAndPoofAction(this.targetCard));
+                AbstractDungeon.actionManager.addToTop(new ShowCardAndPoofAction(targetCard));
                 this.isDone = true;
                 AbstractDungeon.player.cardInUse = null;
                 return;
