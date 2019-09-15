@@ -30,10 +30,21 @@ public class UseChanneledCardAction extends UseCardAction {
 
 	@Override
     public void update() {
+		//partly rewritten from decompiled source code
         //targetCard is private but needs to be reset
-        Field f1 = UseCardAction.class.getDeclaredField("targetCard");
+        Field f1 = null;
+		try {
+			f1 = UseCardAction.class.getDeclaredField("targetCard");
+		} catch (NoSuchFieldException | SecurityException e) {
+			e.printStackTrace();
+		}
         f1.setAccessible(true);
-        AbstractCard targetCard = (AbstractCard) f1.get(this);
+        AbstractCard targetCard = null;
+		try {
+			targetCard = (AbstractCard) f1.get(this);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 		
         if (this.duration == 0.15f) {
             for (final AbstractPower p : AbstractDungeon.player.powers) {
@@ -79,7 +90,7 @@ public class UseChanneledCardAction extends UseCardAction {
                     AbstractDungeon.player.hand.moveToDiscardPile(targetCard);
                 }
             }
-            else {
+            else { 
                 targetCard.exhaustOnUseOnce = false;
                 if (AbstractDungeon.player.hasRelic("Strange Spoon") && targetCard.type != AbstractCard.CardType.POWER) {
                     if (AbstractDungeon.cardRandomRng.randomBoolean()) {
@@ -96,7 +107,7 @@ public class UseChanneledCardAction extends UseCardAction {
                     CardCrawlGame.dungeon.checkForPactAchievement();
                 }
             }
-            if (targetCard.dontTriggerOnUseCard) {
+            if (targetCard.dontTriggerOnUseCard) { 
                 targetCard.dontTriggerOnUseCard = false;
             }
         }

@@ -3,15 +3,21 @@ package cardchanneler.orbs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.actions.utility.ShowCardAction;
+import com.megacrit.cardcrawl.actions.utility.ShowCardAndPoofAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
+import com.megacrit.cardcrawl.actions.utility.WaitAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.AbstractCard.CardTarget;
 import com.megacrit.cardcrawl.cards.CardQueueItem;
+import com.megacrit.cardcrawl.cards.SoulGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import com.megacrit.cardcrawl.vfx.combat.*;
 
@@ -19,6 +25,7 @@ import basemod.BaseMod;
 import basemod.abstracts.DynamicVariable;
 import cardchanneler.helpers.OrbTargettingStraightArrow;
 import cardchanneler.patches.XCostEvokePatch;
+import cardchanneler.patches.ChanneledCardDiscardPatch.BeingRetainedAsOrbField;
 import cardchanneler.vfx.ChanneledCardPassiveEffect;
 
 public class ChanneledCard extends AbstractOrb {
@@ -129,6 +136,9 @@ public class ChanneledCard extends AbstractOrb {
             //new target
             monsterTarget = AbstractDungeon.getRandomMonster();
         }
+        card.unhover();
+        card.untip();
+        card.stopGlowing();
         beingEvoked = true;
         if (card.cost > 0) {
         	card.freeToPlayOnce = true;
@@ -142,6 +152,76 @@ public class ChanneledCard extends AbstractOrb {
         }
         card.calculateCardDamage(monsterTarget);
         card.use(AbstractDungeon.player, monsterTarget);
+        
+        //Skipping this because these they apply to curses, which aren't channeled anyways
+//            for (final AbstractPower p : AbstractDungeon.player.powers) {
+//                if (!targetCard.dontTriggerOnUseCard) {
+//                    p.onAfterUseCard(targetCard, this);
+//                }
+//            }
+//            for (final AbstractMonster m : AbstractDungeon.getMonsters().monsters) {
+//                for (final AbstractPower p2 : m.powers) {
+//                    if (!targetCard.dontTriggerOnUseCard) {
+//                        p2.onAfterUseCard(targetCard, this);
+//                    }
+//                }
+//            }
+            card.freeToPlayOnce = false;
+            if (card.purgeOnUse && !BeingRetainedAsOrbField.beingRetainedAsOrb.get(card)) {
+                AbstractDungeon.actionManager.addToTop(new ShowCardAndPoofAction(card));
+                AbstractDungeon.player.cardInUse = null;
+                return;
+            }
+            
+            if (card.type == AbstractCard.CardType.POWER) {
+            	//skip the animation that pro
+//                AbstractDungeon.actionManager.addToTop(new ShowCardAction(targetCard));
+//                if (Settings.FAST_MODE) {
+//                    AbstractDungeon.actionManager.addToTop(new WaitAction(0.1f));
+//                }
+//                else {
+//                    AbstractDungeon.actionManager.addToTop(new WaitAction(0.7f));
+//                }
+                AbstractDungeon.player.hand.empower(card);
+                AbstractDungeon.player.hand.applyPowers();
+                AbstractDungeon.player.hand.glowCheck();
+//                AbstractDungeon.player.cardInUse = null;
+                return;
+            }
+            AbstractDungeon.player.cardInUse = null;
+            boolean exhaustCard = card.exhaustOnUseOnce || card.exhaust;
+            
+            if (!exhaustCard) {
+//                if (this.reboundCard) {
+            	//Skip rebounds because they imply that the card is being played
+//                    AbstractDungeon.player.hand.moveToDeck(targetCard, false);
+//                }
+//                else {
+	                AbstractDungeon.player.discardPile.addToTop(card);
+	                //discard
+//                }
+            }
+            else { 
+                card.exhaustOnUseOnce = false;
+                if (AbstractDungeon.player.hasRelic("Strange Spoon") && card.type != AbstractCard.CardType.POWER) {
+                    if (AbstractDungeon.cardRandomRng.randomBoolean()) {
+                        AbstractDungeon.player.getRelic("Strange Spoon").flash();
+                        AbstractDungeon.player.hand.moveToDiscardPile(card);
+                    }
+                    else {
+                    	AbstractDungeon.player.exhaustPile.addToTop(card);
+                        CardCrawlGame.dungeon.checkForPactAchievement();
+                    }
+                }
+                else {
+                	AbstractDungeon.player.exhaustPile.addToTop(card);
+                    CardCrawlGame.dungeon.checkForPactAchievement();
+                }
+            }
+            //dontTriggerOnUseCard applies to curses, which aren't channeled anyways
+//            if (targetCard.dontTriggerOnUseCard) { 
+//                targetCard.dontTriggerOnUseCard = false;
+//            }
 //        AbstractDungeon.actionManager.cardQueue.add(new CardQueueItem(card, monsterTarget, card.energyOnUse, true));
 //        AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
         if (card.cost == -1){
@@ -149,7 +229,6 @@ public class ChanneledCard extends AbstractOrb {
             EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue + owedEnergy);
             XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
         }
-        card.freeToPlayOnce = false;
     }
 
     @Override
