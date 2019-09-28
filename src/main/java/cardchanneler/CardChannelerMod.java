@@ -10,6 +10,7 @@ import basemod.interfaces.PostUpdateSubscriber;
 import cardchanneler.helpers.DottedArrowFromOrb;
 import cardchanneler.helpers.OrbTargettingHelper;
 import cardchanneler.orbs.ChanneledCard;
+import cardchanneler.patches.XCostEvokePatch;
 import cardchanneler.relics.CardChannelerRelic;
 
 import com.badlogic.gdx.Gdx;
@@ -23,13 +24,14 @@ import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.rooms.AbstractRoom.RoomPhase;
+import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @SpireInitializer
 public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRelicsSubscriber, EditStringsSubscriber, PostUpdateSubscriber, PostDungeonUpdateSubscriber {
-    private static final Logger logger = LogManager.getLogger(CardChannelerMod.class.getName());
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(CardChannelerMod.class.getName());
 
     public static void initialize() {
         BaseMod.subscribe(new CardChannelerMod());
@@ -86,6 +88,11 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
             OrbTargettingHelper.update();
+            if (XCostEvokePatch.oldEnergyValue != XCostEvokePatch.DEFAULT_ENERGY_VALUE) {
+            	logger.info("Resetting energy to " + XCostEvokePatch.oldEnergyValue);
+            	EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue);
+            	XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
+            }
         }
     }
 }

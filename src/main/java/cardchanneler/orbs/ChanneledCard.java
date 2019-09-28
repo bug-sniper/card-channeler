@@ -145,7 +145,10 @@ public class ChanneledCard extends AbstractOrb {
         }
         if (card.cost == -1){
             //Special code required to handle when the player's energy is used for X cost cards
-            XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
+        	System.out.println("panel was " + EnergyPanel.getCurrentEnergy());
+        	if (XCostEvokePatch.oldEnergyValue == XCostEvokePatch.DEFAULT_ENERGY_VALUE) {
+        		XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
+        	}
             System.out.println("Setting panel to " + XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
             EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
             card.energyOnUse = XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
@@ -224,11 +227,6 @@ public class ChanneledCard extends AbstractOrb {
 //            }
 //        AbstractDungeon.actionManager.cardQueue.add(new CardQueueItem(card, monsterTarget, card.energyOnUse, true));
 //        AbstractDungeon.actionManager.addToTop(new UseCardAction(card, monsterTarget));
-        if (card.cost == -1){
-            int owedEnergy = EnergyPanel.getCurrentEnergy() - XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
-            EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue + owedEnergy);
-            XCostEvokePatch.oldEnergyValue = XCostEvokePatch.DEFAULT_ENERGY_VALUE;
-        }
     }
 
     @Override
