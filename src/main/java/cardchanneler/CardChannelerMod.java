@@ -88,6 +88,7 @@ public class CardChannelerMod implements PostDungeonInitializeSubscriber, EditRe
         }
         if (AbstractDungeon.actionManager.phase == Phase.WAITING_ON_USER){
             OrbTargettingHelper.update();
+            ChanneledCard.beingEvoked = false;
             if (XCostEvokePatch.oldEnergyValue != XCostEvokePatch.DEFAULT_ENERGY_VALUE) {
             	logger.info("Resetting energy to " + XCostEvokePatch.oldEnergyValue);
             	EnergyPanel.setEnergy(XCostEvokePatch.oldEnergyValue);
