@@ -52,11 +52,11 @@ public class ChannelByHoldingDownKeyPatch {
                     f1.setAccessible(true);
                     AbstractMonster target = (AbstractMonster) f1.get(__instance);
                     if (card.canUse(__instance, target)) {
+                    	XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, EnergyPanel.totalCount);
                         final ChanneledCard orb = new ChanneledCard(card);
                         AbstractDungeon.actionManager.addToTop(new ChannelAction(orb));
                         if (card.cost == -1){
                             //X-cost card
-                            XCostEvokePatch.CostAtChannelField.costAtChannel.set(card, EnergyPanel.totalCount);
                             __instance.energy.use(EnergyPanel.totalCount);
                         }
                         if (card.costForTurn > 0 && !card.freeToPlayOnce && (!__instance.hasPower("Corruption") || card.type != AbstractCard.CardType.SKILL)) {

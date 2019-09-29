@@ -143,16 +143,16 @@ public class ChanneledCard extends AbstractOrb {
         if (card.cost > 0) {
         	card.freeToPlayOnce = true;
         }
-        if (card.cost == -1){
-            //Special code required to handle when the player's energy is used for X cost cards
-        	System.out.println("panel was " + EnergyPanel.getCurrentEnergy());
-        	if (XCostEvokePatch.oldEnergyValue == XCostEvokePatch.DEFAULT_ENERGY_VALUE) {
-        		XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
-        	}
-            System.out.println("Setting panel to " + XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
-            EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
-            card.energyOnUse = XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
-        }
+        
+        //Special code required to handle when the player's energy is used for X cost cards
+    	System.out.println("panel was " + EnergyPanel.getCurrentEnergy());
+    	if (XCostEvokePatch.oldEnergyValue == XCostEvokePatch.DEFAULT_ENERGY_VALUE) {
+    		XCostEvokePatch.oldEnergyValue = EnergyPanel.getCurrentEnergy();
+    	}
+        System.out.println("Setting panel to " + XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
+        EnergyPanel.setEnergy(XCostEvokePatch.CostAtChannelField.costAtChannel.get(card));
+        card.energyOnUse = XCostEvokePatch.CostAtChannelField.costAtChannel.get(card);
+        
         card.calculateCardDamage(monsterTarget);
         card.use(AbstractDungeon.player, monsterTarget);
         
