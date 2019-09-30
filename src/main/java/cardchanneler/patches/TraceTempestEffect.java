@@ -18,7 +18,7 @@ import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
         method="update"    
 )    
 public class TraceTempestEffect {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     private static Logger logger = LogManager.getLogger(TraceEnergyChanges.class.getName());
     public static SpireReturn<?> Prefix(TempestAction __instance) {    
         if (!DEBUG){
